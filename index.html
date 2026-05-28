@@ -1,0 +1,2420 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VoteGuide | Interactive Election Process Education Assistant</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Master the voting process, track election deadlines, test your civic knowledge, and simulate ballot counts with our interactive, accessible guide.">
+  <meta name="keywords" content="voter registration, election deadlines, voter education, voting simulator, civic quiz, ballot counting, election guide">
+  <meta name="author" content="VoteGuide Civic Initiative">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f5f3ff',
+              100: '#ede9fe',
+              200: '#ddd6fe',
+              300: '#c084fc',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81',
+              950: '#1e1b4b',
+            },
+            darkbg: {
+              DEFAULT: '#090d16',
+              panel: '#0f172a',
+              border: '#1e293b'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Poppins', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Charts Loader -->
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
+
+  <!-- Custom Core Styling and Variable Overrides -->
+  <style>
+    /* Custom Smooth System-Wide Transitions */
+    body {
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+      font-family: 'Inter', sans-serif;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* Premium Modern Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .dark ::-webkit-scrollbar-track {
+      background: #090d16;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    .dark ::-webkit-scrollbar-thumb {
+      background: #334155;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    /* Glassmorphism Panel styles */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+    }
+    .dark .glass-card {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(51, 65, 85, 0.5);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Focus States for Keyboard Navigation Compliance */
+    *:focus-visible {
+      outline: 3px solid #6366f1 !important;
+      outline-offset: 2px !important;
+    }
+    .dark *:focus-visible {
+      outline: 3px solid #3b82f6 !important;
+    }
+
+    /* Custom Animations */
+    @keyframes pulse-light {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.8; }
+    }
+    .animate-pulse-slow {
+      animation: pulse-light 3s infinite ease-in-out;
+    }
+    
+    .glow-indigo {
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+    }
+    .dark .glow-indigo {
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Stepper line styling */
+    .stepper-line {
+      transition: width 0.6s ease-in-out, height 0.6s ease-in-out, background-color 0.4s ease;
+    }
+
+    /* Smooth slide accordion transitions */
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease;
+    }
+
+    /* High Contrast Accessibility Theme Override */
+    body.high-contrast {
+      background-color: #000000 !important;
+      color: #ffffff !important;
+    }
+    body.high-contrast .glass-card {
+      background: #000000 !important;
+      border: 2px solid #ffffff !important;
+      color: #ffffff !important;
+      box-shadow: none !important;
+    }
+    body.high-contrast button, 
+    body.high-contrast select, 
+    body.high-contrast input,
+    body.high-contrast a {
+      background-color: #000000 !important;
+      color: #ffffff !important;
+      border: 2px solid #ffffff !important;
+      border-radius: 4px !important;
+    }
+    body.high-contrast button:hover,
+    body.high-contrast button:focus {
+      background-color: #ffffff !important;
+      color: #000000 !important;
+    }
+    body.high-contrast *:focus-visible {
+      outline: 4px solid #ffff00 !important;
+      outline-offset: 3px !important;
+    }
+    body.high-contrast .text-slate-600,
+    body.high-contrast .text-slate-500,
+    body.high-contrast .text-gray-400,
+    body.high-contrast .text-slate-400 {
+      color: #ffffff !important;
+    }
+    body.high-contrast .bg-slate-100,
+    body.high-contrast .bg-indigo-50,
+    body.high-contrast .bg-emerald-50,
+    body.high-contrast .bg-amber-50 {
+      background-color: #111111 !important;
+      border: 1px dashed #ffffff;
+    }
+
+    /* Print styling rules - isolates the Civic Passport Certificate */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #print-certificate-container, #print-certificate-container * {
+        visibility: visible;
+      }
+      #print-certificate-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 20px;
+        box-shadow: none !important;
+        border: 2px solid #000000 !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 dark:bg-darkbg dark:text-slate-100 min-h-screen text-base flex flex-col" id="app-body">
+
+  <!-- A11y Skip Link -->
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-brand-600 text-white px-4 py-2 rounded-lg z-50 shadow-lg font-semibold">
+    Skip to main content
+  </a>
+
+  <!-- Header Bar -->
+  <header class="sticky top-0 z-40 w-full glass-card border-b border-slate-200/60 dark:border-slate-800/60 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="#" class="flex items-center space-x-3 group" aria-label="VoteGuide Homepage">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-400 flex items-center justify-center text-white shadow-md shadow-brand-500/20 group-hover:scale-105 transition-transform duration-200">
+          <i class="fa-solid fa-check-to-slot text-lg"></i>
+        </div>
+        <div>
+          <span class="text-xl font-bold tracking-tight bg-gradient-to-r from-brand-600 to-indigo-500 dark:from-indigo-400 dark:to-indigo-200 bg-clip-text text-transparent display-font">VoteGuide</span>
+          <span class="hidden sm:inline-block text-[10px] uppercase font-bold tracking-widest text-slate-400 ml-2 px-1.5 py-0.5 border border-slate-200 dark:border-slate-700 rounded bg-slate-100/50 dark:bg-slate-800/30">Civic Hub</span>
+        </div>
+      </a>
+
+      <!-- Quick Stats / Progress Mini Widget -->
+      <div class="hidden md:flex items-center space-x-4 text-xs font-semibold text-slate-500 dark:text-slate-400">
+        <div class="flex items-center space-x-2">
+          <span>Journey:</span>
+          <span id="header-journey-badge" class="bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-300 px-2 py-0.5 rounded-full">0/6 Steps</span>
+        </div>
+        <div class="w-px h-4 bg-slate-200 dark:bg-slate-800"></div>
+        <div class="flex items-center space-x-2">
+          <span>Civic Score:</span>
+          <span id="header-quiz-badge" class="bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300 px-2 py-0.5 rounded-full">Quiz Untested</span>
+        </div>
+      </div>
+
+      <!-- Controls & Toggle Panel -->
+      <div class="flex items-center space-x-3">
+        
+        <!-- Accessibility Panel Toggle (Desktop) -->
+        <button id="quick-a11y-toggle" class="p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors" aria-label="Open accessibility tools" title="Accessibility Tools">
+          <i class="fa-solid fa-universal-access text-lg"></i>
+        </button>
+
+        <!-- Dark/Light Theme Toggle -->
+        <button id="theme-toggle" class="p-2.5 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 border border-slate-200/50 dark:border-slate-800/50 shadow-sm transition-all" aria-label="Toggle visual contrast theme" title="Toggle Theme">
+          <i class="fa-solid fa-moon dark:hidden text-lg"></i>
+          <i class="fa-solid fa-sun hidden dark:inline text-lg text-amber-400"></i>
+        </button>
+
+        <!-- CTAs -->
+        <a href="#quiz-section" class="hidden sm:inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 active:bg-brand-800 shadow-md shadow-brand-500/10 rounded-xl transition-all duration-200 hover:-translate-y-0.5" aria-label="Take our 10 question quiz">
+          Take Civic Quiz
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="relative overflow-hidden py-12 lg:py-16 bg-gradient-to-b from-brand-50/50 via-transparent to-transparent dark:from-brand-950/20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        
+        <!-- Hero Copy -->
+        <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+          <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 dark:bg-indigo-950/30 dark:border-indigo-900/50 dark:text-indigo-300 text-xs font-semibold tracking-wide">
+            <span class="w-2 h-2 rounded-full bg-brand-500 animate-ping"></span>
+            <span>Empowering Voters Worldwide</span>
+          </div>
+          
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight display-font">
+            Master the Mechanics of <span class="bg-gradient-to-r from-brand-600 via-indigo-500 to-violet-600 bg-clip-text text-transparent">Democracy</span>
+          </h1>
+          
+          <p class="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto lg:mx-0 font-normal">
+            Welcome to VoteGuide. Our production-ready digital assistant breaks down candidate research, deadlines, and casting your ballot. Engage in voter journeys, simulated voting dashboards, and test your credentials.
+          </p>
+
+          <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+            <a href="#journey-section" class="w-full sm:w-auto px-6 py-3.5 text-base font-semibold text-white bg-brand-600 hover:bg-brand-700 shadow-lg shadow-brand-500/20 hover:shadow-brand-500/35 rounded-xl transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5">
+              <i class="fa-solid fa-route"></i> Begin Voter Journey
+            </a>
+            <a href="#simulator-section" class="w-full sm:w-auto px-6 py-3.5 text-base font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 dark:text-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-slate-800 shadow-sm rounded-xl transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5">
+              <i class="fa-solid fa-chart-column"></i> Try Voting Simulator
+            </a>
+          </div>
+        </div>
+
+        <!-- Hero Decorative Graphic -->
+        <div class="lg:col-span-5 hidden lg:flex justify-center">
+          <div class="relative w-80 h-80 flex items-center justify-center">
+            
+            <!-- Animated Radial Rings -->
+            <div class="absolute inset-0 rounded-full border border-indigo-500/20 dark:border-indigo-400/10 animate-pulse-slow"></div>
+            <div class="absolute inset-8 rounded-full border-2 border-dashed border-indigo-500/10 dark:border-indigo-400/5 animate-spin" style="animation-duration: 20s;"></div>
+            
+            <!-- Central Ballot Box Graphic -->
+            <div class="relative w-48 h-48 bg-white dark:bg-slate-900 rounded-3xl shadow-xl flex flex-col items-center justify-center border border-slate-200/50 dark:border-slate-800/80 glow-indigo">
+              <i class="fa-solid fa-box-archive text-6xl text-brand-600 dark:text-indigo-400 animate-bounce" style="animation-duration: 4s;"></i>
+              <span class="text-sm font-bold text-slate-500 dark:text-slate-400 mt-4 display-font">BALLOT BOX</span>
+              
+              <!-- Floating checkmarks -->
+              <span class="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-lg transform rotate-12 scale-95 animate-pulse">
+                <i class="fa-solid fa-check text-sm"></i>
+              </span>
+              <span class="absolute bottom-6 -left-4 w-6 h-6 rounded-full bg-amber-500 text-white flex items-center justify-center shadow-md transform -rotate-12 scale-90">
+                <i class="fa-solid fa-clock text-[10px]"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Accessibility Controls Floating Drawer (Hidden by default, toggled via universal button) -->
+  <div id="a11y-control-panel" class="hidden fixed bottom-6 left-6 right-6 md:left-auto md:w-96 glass-card p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xl z-50 transition-all duration-300">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-bold text-sm text-slate-900 dark:text-slate-100 flex items-center gap-2">
+        <i class="fa-solid fa-sliders text-indigo-500"></i> Accessibility Settings
+      </h3>
+      <button id="close-a11y-btn" class="p-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400" aria-label="Close settings pane">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    
+    <div class="space-y-4">
+      
+      <!-- Font Resizer -->
+      <div>
+        <label for="font-size-range" class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2">Adjust Font Size</label>
+        <div class="flex items-center justify-between gap-3">
+          <button id="font-decrease" class="px-3 py-1 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded text-sm hover:bg-slate-100" aria-label="Decrease text size">A-</button>
+          <span id="font-size-percentage" class="text-xs font-bold font-mono">100%</span>
+          <button id="font-increase" class="px-3 py-1 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded text-sm hover:bg-slate-100" aria-label="Increase text size">A+</button>
+        </div>
+      </div>
+
+      <!-- High Contrast Toggle Toggle -->
+      <div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-3">
+        <div>
+          <span class="block text-xs font-bold">High Contrast Mode</span>
+          <span class="text-[10px] text-slate-400">Strict stark contrasts for screen legibility</span>
+        </div>
+        <button id="high-contrast-toggle" class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none bg-slate-200 dark:bg-slate-800" role="switch" aria-checked="false" aria-label="High contrast switch">
+          <span aria-hidden="true" class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-0" id="high-contrast-dot"></span>
+        </button>
+      </div>
+
+      <!-- Accessibility Readout Indicator -->
+      <div class="bg-indigo-50/50 dark:bg-slate-900/50 border border-indigo-100/30 dark:border-slate-800/80 p-3 rounded-lg text-[11px] text-slate-500 leading-relaxed">
+        <i class="fa-solid fa-circle-info text-indigo-500 mr-1"></i> Use standard <kbd class="px-1.5 py-0.5 bg-white dark:bg-slate-800 shadow rounded">Tab</kbd> to step through interactive elements, and <kbd class="px-1.5 py-0.5 bg-white dark:bg-slate-800 shadow rounded">Enter</kbd> or <kbd class="px-1.5 py-0.5 bg-white dark:bg-slate-800 shadow rounded">Spacebar</kbd> to execute votes, quizzes and accordions.
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN WRAPPER CONTAINER -->
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-16" id="main-content">
+    
+    <!-- GRID CONTAINER: TWO COLUMNS (Desktop) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- LEFT HAND COLUMN: Journey Stepper & Tracker (7 Columns) -->
+      <div class="lg:col-span-7 space-y-12">
+        
+        <!-- DEADLINES COUNTDOWN TRACKER (FEATURE 2) -->
+        <section id="deadlines-section" class="glass-card rounded-2xl p-6 relative overflow-hidden group hover:border-brand-500/30 transition-all duration-300" aria-labelledby="deadline-tracker-title">
+          
+          <!-- Warning banner strip -->
+          <div id="deadline-urgency-banner" class="absolute top-0 left-0 right-0 h-1.5 bg-indigo-500 transition-colors duration-500"></div>
+
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div>
+              <h2 id="deadline-tracker-title" class="text-xl font-bold flex items-center gap-2">
+                <i class="fa-solid fa-clock-rotate-left text-amber-500"></i> Election Deadlines Tracker
+              </h2>
+              <p class="text-xs text-slate-500 mt-1">Live countdown timers synced with crucial civic landmarks</p>
+            </div>
+            
+            <!-- Selector Dropdown -->
+            <div class="flex items-center space-x-2">
+              <label for="election-selector" class="sr-only">Choose Election Date</label>
+              <select id="election-selector" class="w-full sm:w-auto px-3 py-1.5 text-xs font-semibold bg-white border border-slate-200 rounded-lg shadow-sm focus:border-brand-500 dark:bg-slate-900 dark:border-slate-800 transition-colors" aria-label="Select election target">
+                <option value="national-general">National General Election</option>
+                <option value="voter-reg-cutoff">Voter Registration Cut-off</option>
+                <option value="absentee-request">Absentee Ballot Request</option>
+                <option value="custom">Custom Election Date...</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Custom Date Input panel (Hidden until custom selected) -->
+          <div id="custom-date-container" class="hidden mb-6 p-4 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 bg-slate-100/30 dark:bg-slate-900/40 transition-all">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                <label for="custom-date-picker" class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Choose Custom Date</label>
+                <span class="text-[10px] text-slate-400">Select any future date to start an individualized countdown.</span>
+              </div>
+              <input type="date" id="custom-date-picker" class="px-3 py-2 text-sm bg-white border border-slate-200 rounded-lg dark:bg-slate-900 dark:border-slate-800 shadow-sm" aria-label="Custom date selector calendar">
+            </div>
+          </div>
+
+          <!-- The Countdown Clock UI Grid -->
+          <div class="grid grid-cols-4 gap-3 md:gap-4 text-center mb-6">
+            
+            <div class="bg-white/60 dark:bg-slate-900/60 border border-slate-200/50 dark:border-slate-800/80 rounded-xl p-3 shadow-sm">
+              <span id="timer-days" class="block text-2xl sm:text-3xl md:text-4xl font-extrabold text-brand-600 dark:text-indigo-400 font-mono tracking-tight transition-transform duration-200 scale-100">00</span>
+              <span class="text-[9px] sm:text-[10px] uppercase font-bold tracking-widest text-slate-400 mt-1 block">Days</span>
+            </div>
+            
+            <div class="bg-white/60 dark:bg-slate-900/60 border border-slate-200/50 dark:border-slate-800/80 rounded-xl p-3 shadow-sm">
+              <span id="timer-hours" class="block text-2xl sm:text-3xl md:text-4xl font-extrabold text-brand-600 dark:text-indigo-400 font-mono tracking-tight transition-transform duration-200 scale-100">00</span>
+              <span class="text-[9px] sm:text-[10px] uppercase font-bold tracking-widest text-slate-400 mt-1 block">Hours</span>
+            </div>
+
+            <div class="bg-white/60 dark:bg-slate-900/60 border border-slate-200/50 dark:border-slate-800/80 rounded-xl p-3 shadow-sm">
+              <span id="timer-minutes" class="block text-2xl sm:text-3xl md:text-4xl font-extrabold text-brand-600 dark:text-indigo-400 font-mono tracking-tight transition-transform duration-200 scale-100">00</span>
+              <span class="text-[9px] sm:text-[10px] uppercase font-bold tracking-widest text-slate-400 mt-1 block">Minutes</span>
+            </div>
+
+            <div class="bg-white/60 dark:bg-slate-900/60 border border-slate-200/50 dark:border-slate-800/80 rounded-xl p-3 shadow-sm">
+              <span id="timer-seconds" class="block text-2xl sm:text-3xl md:text-4xl font-extrabold text-brand-600 dark:text-indigo-400 font-mono tracking-tight transition-transform duration-200 scale-100">00</span>
+              <span class="text-[9px] sm:text-[10px] uppercase font-bold tracking-widest text-slate-400 mt-1 block">Seconds</span>
+            </div>
+
+          </div>
+
+          <!-- Dynamic Alerts / Informative helper based on days left -->
+          <div id="deadline-status-tip" class="p-3.5 rounded-xl text-xs bg-indigo-50 border border-indigo-100 text-indigo-700 dark:bg-indigo-950/20 dark:border-indigo-900/30 dark:text-indigo-300 flex items-start gap-2.5 transition-all">
+            <i class="fa-solid fa-circle-exclamation text-indigo-500 mt-0.5"></i>
+            <div>
+              <strong id="deadline-alert-heading">Pre-election period is active.</strong>
+              <span id="deadline-alert-body">Ensure registration details are validated prior to cutoff calendar dates.</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- INTERACTIVE VOTER JOURNEY STEPPER (FEATURE 1) -->
+        <section id="journey-section" class="glass-card rounded-2xl p-6" aria-labelledby="journey-stepper-title">
+          <div class="mb-8">
+            <h2 id="journey-stepper-title" class="text-xl font-bold flex items-center gap-2">
+              <i class="fa-solid fa-route text-indigo-500"></i> Interactive Voter Journey Stepper
+            </h2>
+            <p class="text-xs text-slate-500 mt-1">Complete each crucial step of the polling process sequentially to earn credentials</p>
+          </div>
+
+          <!-- The Animated Timeline Nodes -->
+          <div class="relative mb-8">
+            
+            <!-- Connector Line Background -->
+            <div class="absolute top-5 left-8 right-8 h-1 bg-slate-200 dark:bg-slate-800 rounded -z-10 hidden sm:block">
+              <!-- Active filled line -->
+              <div id="stepper-progress-line" class="stepper-line h-full w-0 bg-brand-600 dark:bg-indigo-400"></div>
+            </div>
+
+            <!-- Steps Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-6 gap-6 relative z-10" role="tablist" aria-label="Voter step navigator">
+              
+              <!-- STEP 1 -->
+              <button id="step-btn-1" class="flex sm:flex-col items-center text-left sm:text-center group focus:outline-none w-full" role="tab" aria-selected="true" aria-controls="step-panel-1" aria-label="Step 1: Registration Check">
+                <span class="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold bg-brand-600 text-white ring-4 ring-indigo-500/20 dark:ring-indigo-400/20 group-hover:scale-105 transition-all duration-200 cursor-pointer" id="step-badge-1">
+                  <i class="fa-solid fa-user-plus"></i>
+                </span>
+                <span class="ml-4 sm:ml-0 sm:mt-2 text-xs font-bold block" id="step-label-1">1. Register</span>
+              </button>
+
+              <!-- STEP 2 -->
+              <button id="step-btn-2" class="flex sm:flex-col items-center text-left sm:text-center group focus:outline-none w-full" role="tab" aria-selected="false" aria-controls="step-panel-2" aria-label="Step 2: Candidate Research">
+                <span class="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover:bg-slate-300 dark:group-hover:bg-slate-700 transition-all duration-200 cursor-pointer" id="step-badge-2">
+                  <i class="fa-solid fa-book-open"></i>
+                </span>
+                <span class="ml-4 sm:ml-0 sm:mt-2 text-xs font-semibold text-slate-500 dark:text-slate-400 block" id="step-label-2">2. Research</span>
+              </button>
+
+              <!-- STEP 3 -->
+              <button id="step-btn-3" class="flex sm:flex-col items-center text-left sm:text-center group focus:outline-none w-full" role="tab" aria-selected="false" aria-controls="step-panel-3" aria-label="Step 3: Make a Plan">
+                <span class="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover:bg-slate-300 dark:group-hover:bg-slate-700 transition-all duration-200 cursor-pointer" id="step-badge-3">
+                  <i class="fa-solid fa-map-location-dot"></i>
+                </span>
+                <span class="ml-4 sm:ml-0 sm:mt-2 text-xs font-semibold text-slate-500 dark:text-slate-400 block" id="step-label-3">3. Make Plan</span>
+              </button>
+
+              <!-- STEP 4 -->
+              <button id="step-btn-4" class="flex sm:flex-col items-center text-left sm:text-center group focus:outline-none w-full" role="tab" aria-selected="false" aria-controls="step-panel-4" aria-label="Step 4: Prepare Materials">
+                <span class="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover:bg-slate-300 dark:group-hover:bg-slate-700 transition-all duration-200 cursor-pointer" id="step-badge-4">
+                  <i class="fa-solid fa-id-card"></i>
+                </span>
+                <span class="ml-4 sm:ml-0 sm:mt-2 text-xs font-semibold text-slate-500 dark:text-slate-400 block" id="step-label-4">4. ID Rules</span>
+              </button>
+
+              <!-- STEP 5 -->
+              <button id="step-btn-5" class="flex sm:flex-col items-center text-left sm:text-center group focus:outline-none w-full" role="tab" aria-selected="false" aria-controls="step-panel-5" aria-label="Step 5: Cast Ballot">
+                <span class="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover:bg-slate-300 dark:group-hover:bg-slate-700 transition-all duration-200 cursor-pointer" id="step-badge-5">
+                  <i class="fa-solid fa-box-archive"></i>
+                </span>
+                <span class="ml-4 sm:ml-0 sm:mt-2 text-xs font-semibold text-slate-500 dark:text-slate-400 block" id="step-label-5">5. Vote</span>
+              </button>
+
+              <!-- STEP 6 -->
+              <button id="step-btn-6" class="flex sm:flex-col items-center text-left sm:text-center group focus:outline-none w-full" role="tab" aria-selected="false" aria-controls="step-panel-6" aria-label="Step 6: Verify Results">
+                <span class="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover:bg-slate-300 dark:group-hover:bg-slate-700 transition-all duration-200 cursor-pointer" id="step-badge-6">
+                  <i class="fa-solid fa-square-check"></i>
+                </span>
+                <span class="ml-4 sm:ml-0 sm:mt-2 text-xs font-semibold text-slate-500 dark:text-slate-400 block" id="step-label-6">6. Verify</span>
+              </button>
+
+            </div>
+          </div>
+
+          <!-- DYNAMIC CONTENT CARD PANEL -->
+          <div class="bg-white/60 dark:bg-slate-900/60 border border-slate-200/50 dark:border-slate-800/80 rounded-2xl p-6 transition-all duration-300 relative overflow-hidden" id="step-panel-container">
+            
+            <div id="step-display-area" class="space-y-4">
+              <!-- Loaded Dynamically by JS Stepper Module -->
+            </div>
+
+            <!-- Task checklist -->
+            <div class="border-t border-slate-200 dark:border-slate-800 mt-6 pt-5">
+              <span class="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3">Milestone Checklist (Interactive sub-tasks)</span>
+              <ul id="step-checklist" class="space-y-2 text-xs font-semibold">
+                <!-- Loaded dynamically by JS -->
+              </ul>
+            </div>
+
+            <!-- Interactive Mark Complete Action Button -->
+            <div class="flex items-center justify-between border-t border-slate-200 dark:border-slate-800 mt-6 pt-5">
+              <span class="text-xs text-slate-400 flex items-center gap-1">
+                <i class="fa-solid fa-circle-question"></i> Checks will reflect instantly on your Dashboard.
+              </span>
+              <button id="step-complete-btn" class="px-5 py-2.5 text-xs font-bold bg-indigo-50 border border-indigo-100 hover:bg-brand-600 hover:text-white dark:bg-indigo-950/20 dark:border-indigo-900/50 dark:hover:bg-indigo-700 dark:hover:text-white rounded-xl transition-all flex items-center gap-2" aria-label="Mark current journey stage complete">
+                <i class="fa-regular fa-circle-check"></i> Mark Stage Completed
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- RIGHT HAND COLUMN: Quiz & Simulator (5 Columns) -->
+      <div class="lg:col-span-5 space-y-12">
+        
+        <!-- MOCK VOTING SIMULATION PANEL (FEATURE 5) -->
+        <section id="simulator-section" class="glass-card rounded-2xl p-6" aria-labelledby="simulator-section-title">
+          <div class="mb-6">
+            <h2 id="simulator-section-title" class="text-xl font-bold flex items-center gap-2">
+              <i class="fa-solid fa-chart-column text-indigo-500"></i> Interactive Voting Simulator
+            </h2>
+            <p class="text-xs text-slate-500 mt-1">Cast a custom vote or trigger simulation tallies to watch counting systems in real time</p>
+          </div>
+
+          <!-- Ballot Box Interface -->
+          <div class="space-y-4 mb-6">
+            <span class="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Select Candidate Ballot</span>
+            
+            <!-- Candidate 1 -->
+            <button class="w-full text-left p-3.5 rounded-xl border border-slate-200 hover:border-brand-500 dark:border-slate-800/80 bg-white/40 dark:bg-slate-900/40 hover:bg-brand-50/20 dark:hover:bg-slate-950/30 flex items-center justify-between group transition-all" onclick="castVote('jenkins')" aria-label="Vote for Sarah Jenkins, Civic Unity Party">
+              <div>
+                <span class="text-sm font-bold block text-indigo-600 dark:text-indigo-400">Sarah Jenkins</span>
+                <span class="text-[10px] text-slate-500 dark:text-slate-400">Civic Unity Party • Focus: Transit & Libraries</span>
+              </div>
+              <span class="w-6 h-6 rounded-full border border-slate-300 dark:border-slate-600 flex items-center justify-center text-xs group-hover:bg-brand-600 group-hover:text-white transition-colors">
+                <i class="fa-solid fa-check opacity-0 group-hover:opacity-100"></i>
+              </span>
+            </button>
+
+            <!-- Candidate 2 -->
+            <button class="w-full text-left p-3.5 rounded-xl border border-slate-200 hover:border-emerald-500 dark:border-slate-800/80 bg-white/40 dark:bg-slate-900/40 hover:bg-emerald-50/20 dark:hover:bg-slate-950/30 flex items-center justify-between group transition-all" onclick="castVote('vance')" aria-label="Vote for Marcus Vance, Progressive Action Alliance">
+              <div>
+                <span class="text-sm font-bold block text-emerald-600 dark:text-emerald-400">Marcus Vance</span>
+                <span class="text-[10px] text-slate-500 dark:text-slate-400">Progressive Action Alliance • Focus: Green Energy</span>
+              </div>
+              <span class="w-6 h-6 rounded-full border border-slate-300 dark:border-slate-600 flex items-center justify-center text-xs group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                <i class="fa-solid fa-check opacity-0 group-hover:opacity-100"></i>
+              </span>
+            </button>
+
+            <!-- Candidate 3 -->
+            <button class="w-full text-left p-3.5 rounded-xl border border-slate-200 hover:border-amber-500 dark:border-slate-800/80 bg-white/40 dark:bg-slate-900/40 hover:bg-amber-50/20 dark:hover:bg-slate-950/30 flex items-center justify-between group transition-all" onclick="castVote('rostova')" aria-label="Vote for Elena Rostova, Freedom & Justice Coalition">
+              <div>
+                <span class="text-sm font-bold block text-amber-600 dark:text-amber-400">Elena Rostova</span>
+                <span class="text-[10px] text-slate-500 dark:text-slate-400">Freedom & Justice Coalition • Focus: Data Privacy & Economy</span>
+              </div>
+              <span class="w-6 h-6 rounded-full border border-slate-300 dark:border-slate-600 flex items-center justify-center text-xs group-hover:bg-amber-600 group-hover:text-white transition-colors">
+                <i class="fa-solid fa-check opacity-0 group-hover:opacity-100"></i>
+              </span>
+            </button>
+
+            <!-- Candidate 4 -->
+            <button class="w-full text-left p-3.5 rounded-xl border border-slate-200 hover:border-slate-400 dark:border-slate-800/80 bg-white/40 dark:bg-slate-900/40 hover:bg-slate-100/30 dark:hover:bg-slate-950/30 flex items-center justify-between group transition-all" onclick="castVote('writein')" aria-label="Cast a write-in vote for Other candidates">
+              <div>
+                <span class="text-sm font-bold block text-slate-600 dark:text-slate-400">Write-in / Other</span>
+                <span class="text-[10px] text-slate-500 dark:text-slate-400">Independent campaigns & alternative selections</span>
+              </div>
+              <span class="w-6 h-6 rounded-full border border-slate-300 dark:border-slate-600 flex items-center justify-center text-xs group-hover:bg-slate-600 group-hover:text-white transition-colors">
+                <i class="fa-solid fa-check opacity-0 group-hover:opacity-100"></i>
+              </span>
+            </button>
+          </div>
+
+          <!-- Simulator Engine Options Grid -->
+          <div class="grid grid-cols-2 gap-3 mb-6">
+            <button id="run-sim-btn" class="w-full py-2.5 px-4 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-brand-500/10 rounded-xl transition-all flex items-center justify-center gap-2" aria-label="Run automatic mock voting simulation batch counts">
+              <i class="fa-solid fa-bolt"></i> Simulate 50 Votes
+            </button>
+            <button id="reset-sim-btn" class="w-full py-2.5 px-4 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 dark:text-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700/60 rounded-xl transition-all flex items-center justify-center gap-2" aria-label="Reset simulation tally charts to zero">
+              <i class="fa-solid fa-rotate-left"></i> Reset Simulation
+            </button>
+          </div>
+
+          <!-- Animated Loading Scanner overlay for simulation run -->
+          <div id="sim-progress-wrapper" class="hidden mb-6 p-3 bg-indigo-50 border border-indigo-100/40 rounded-xl dark:bg-slate-900/60 dark:border-slate-800/80">
+            <div class="flex items-center justify-between text-xs font-semibold text-indigo-700 dark:text-indigo-400 mb-2">
+              <span class="flex items-center gap-1.5"><i class="fa-solid fa-spinner animate-spin"></i> Scanner feeding ballots...</span>
+              <span id="sim-progress-percentage">0%</span>
+            </div>
+            <div class="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+              <div id="sim-progress-bar" class="w-0 h-full bg-indigo-600 transition-all duration-75"></div>
+            </div>
+          </div>
+
+          <!-- RENDERED VISUALIZATIONS WIDGETS -->
+          <div class="border-t border-slate-200 dark:border-slate-800 pt-6">
+            
+            <!-- Default Placeholder Tally is Empty -->
+            <div id="chart-placeholder" class="py-12 px-4 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 text-center flex flex-col items-center justify-center text-slate-400 dark:text-slate-500">
+              <i class="fa-solid fa-chart-pie text-4xl mb-3 text-slate-300 dark:text-slate-700"></i>
+              <span class="text-xs font-bold uppercase tracking-wider block">No Ballots Cast Yet</span>
+              <p class="text-[11px] leading-relaxed max-w-xs mt-1 font-normal">Select a candidate above or click "Simulate 50 Votes" to initialize dynamic election charting models.</p>
+            </div>
+
+            <!-- Charts Render Target divs -->
+            <div id="charts-wrapper" class="hidden space-y-6">
+              
+              <!-- Tab selection for chart type -->
+              <div class="flex bg-slate-100 dark:bg-slate-900/80 p-1 rounded-xl mb-4" role="tablist" aria-label="Visual representation formats">
+                <button id="tab-pie-btn" class="flex-1 py-1.5 text-xs font-bold text-center bg-white dark:bg-slate-800 rounded-lg shadow-sm focus:outline-none" role="tab" aria-selected="true" aria-controls="pie-chart-container">Pie Distribution</button>
+                <button id="tab-bar-btn" class="flex-1 py-1.5 text-xs font-semibold text-center text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 rounded-lg focus:outline-none" role="tab" aria-selected="false" aria-controls="bar-chart-container">Column Tally</button>
+              </div>
+
+              <!-- Pie Chart Div Container -->
+              <div id="pie-chart-container" class="w-full h-56 transition-all duration-300" role="img" aria-label="Voter simulation pie chart details"></div>
+
+              <!-- Bar Chart Div Container (Hidden at start) -->
+              <div id="bar-chart-container" class="w-full h-56 transition-all duration-300 hidden" role="img" aria-label="Voter simulation bar chart details"></div>
+
+              <!-- Education banner explaining ballot counting -->
+              <div class="p-3 bg-emerald-50 border border-emerald-100/50 rounded-xl dark:bg-emerald-950/10 dark:border-emerald-900/30 text-[10px] text-emerald-800 dark:text-emerald-400 leading-relaxed font-semibold">
+                <i class="fa-solid fa-graduation-cap text-xs mr-1 text-emerald-500"></i> **Civic Concept**: Under **Plurality Voting**, the candidate with the highest vote count wins, regardless of whether they achieve an absolute majority (>50%).
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- INTERACTIVE VOTER AWARENESS QUIZ (FEATURE 3) -->
+        <section id="quiz-section" class="glass-card rounded-2xl p-6" aria-labelledby="quiz-section-title">
+          <div class="mb-6">
+            <h2 id="quiz-section-title" class="text-xl font-bold flex items-center gap-2">
+              <i class="fa-solid fa-graduation-cap text-indigo-500"></i> Civic Awareness Quiz
+            </h2>
+            <p class="text-xs text-slate-500 mt-1">Test your constitutional and voting protocol knowledge to validate credentials</p>
+          </div>
+
+          <!-- QUIZ SCREEN: UNTESTED / START SCREEN -->
+          <div id="quiz-start-screen" class="space-y-4 text-center py-6 flex flex-col items-center">
+            <div class="w-16 h-16 bg-indigo-50 dark:bg-indigo-950/20 text-brand-600 dark:text-indigo-400 flex items-center justify-center rounded-full text-2xl shadow-sm mb-2">
+              <i class="fa-regular fa-clipboard"></i>
+            </div>
+            <h3 class="font-bold text-sm">Are you an Informed Voter?</h3>
+            <p class="text-xs text-slate-500 max-w-xs mx-auto">Take our rapid 10-question evaluation to evaluate your awareness of registration rules, election certifying, and ballots.</p>
+            
+            <button id="start-quiz-btn" class="px-5 py-2.5 text-xs font-bold text-white bg-brand-600 hover:bg-brand-700 shadow-md shadow-brand-500/15 rounded-xl transition-all hover:-translate-y-0.5" aria-label="Start voter awareness quiz">
+              Begin Evaluation
+            </button>
+          </div>
+
+          <!-- QUIZ SCREEN: ACTIVE RUNNING -->
+          <div id="quiz-active-screen" class="hidden space-y-6">
+            
+            <!-- Progress meters -->
+            <div>
+              <div class="flex justify-between items-center text-xs font-semibold text-slate-400 mb-2">
+                <span>Evaluations Completed: <strong class="text-slate-600 dark:text-slate-200" id="quiz-progress-text">1/10</strong></span>
+                <span id="quiz-score-tracker">Score: 0</span>
+              </div>
+              <div class="w-full bg-slate-200 dark:bg-slate-800 h-1 rounded-full overflow-hidden">
+                <div id="quiz-progress-bar" class="w-[10%] h-full bg-indigo-600 transition-all duration-300"></div>
+              </div>
+            </div>
+
+            <!-- Quiz Statement -->
+            <div class="bg-slate-50/50 dark:bg-slate-900/40 p-4 border border-slate-200/50 dark:border-slate-800/80 rounded-xl">
+              <h3 id="quiz-question-text" class="text-sm font-bold leading-relaxed">Loaded question details appear here?</h3>
+            </div>
+
+            <!-- Multiple choice options panel -->
+            <div class="space-y-2.5" id="quiz-options-panel">
+              <!-- Rendered Dynamically by JS -->
+            </div>
+
+            <!-- Answer verification explanation wrapper -->
+            <div id="quiz-explanation-wrapper" class="hidden p-4 rounded-xl border transition-all text-xs font-medium leading-relaxed">
+              <div class="flex items-center gap-2 mb-1.5">
+                <span id="quiz-verdict-icon" class="text-sm"></span>
+                <strong id="quiz-verdict-heading">Verdict Details</strong>
+              </div>
+              <p id="quiz-explanation-text">Detailed informative text of why option correct.</p>
+            </div>
+
+            <!-- Quiz action panel -->
+            <div class="flex justify-end">
+              <button id="quiz-next-btn" class="px-5 py-2.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-brand-500/10 rounded-xl transition-all hidden" aria-label="Proceed to next quiz question">
+                Next Question <i class="fa-solid fa-arrow-right ml-1"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- QUIZ SCREEN: REPORT OUTCOME -->
+          <div id="quiz-results-screen" class="hidden text-center py-6 space-y-5">
+            <div id="quiz-badge-visual" class="text-5xl animate-bounce" style="animation-duration: 3s;">🏆</div>
+            
+            <div>
+              <span class="text-xs uppercase font-bold tracking-widest text-slate-400">Civic Badge Awarded</span>
+              <h3 id="quiz-badge-title" class="text-lg font-bold text-brand-600 dark:text-indigo-400 mt-0.5">Engaged Citizen</h3>
+              <p id="quiz-badge-desc" class="text-xs text-slate-500 max-w-xs mx-auto mt-1 leading-relaxed">Outstanding metrics scored. Ready to cast your official ballot.</p>
+            </div>
+
+            <div class="bg-slate-50/50 dark:bg-slate-900/60 border border-slate-200/50 dark:border-slate-800/80 rounded-xl p-4 max-w-xs mx-auto text-xs font-semibold space-y-1.5">
+              <div class="flex justify-between">
+                <span class="text-slate-400">Total Score:</span>
+                <span id="quiz-result-score" class="font-bold text-sm">8/10</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">Correct Answers:</span>
+                <span id="quiz-result-correct" class="text-emerald-500 font-bold">8</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">Incorrect Attempts:</span>
+                <span id="quiz-result-incorrect" class="text-rose-500 font-bold">2</span>
+              </div>
+            </div>
+
+            <button id="retry-quiz-btn" class="px-5 py-2.5 text-xs font-semibold text-indigo-600 bg-indigo-50 border border-indigo-100 hover:bg-brand-600 hover:text-white dark:text-indigo-300 dark:bg-indigo-950/20 dark:border-indigo-900/50 dark:hover:bg-indigo-700 dark:hover:text-white rounded-xl transition-all flex items-center gap-2 mx-auto" aria-label="Retry voter awareness quiz evaluation">
+              <i class="fa-solid fa-rotate-left"></i> Retake Evaluation
+            </button>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- FAQ KNOWLEDGE ACCORDION BASE (FEATURE 4) -->
+    <section id="faq-section" class="glass-card rounded-2xl p-6 md:p-8" aria-labelledby="faq-section-title">
+      
+      <!-- FAQ Header Section -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 border-b border-slate-200/60 dark:border-slate-800/60 pb-6">
+        <div>
+          <h2 id="faq-section-title" class="text-xl font-bold flex items-center gap-2">
+            <i class="fa-solid fa-circle-question text-indigo-500"></i> Voter Rights FAQ Knowledge Base
+          </h2>
+          <p class="text-xs text-slate-500 mt-1">Easily search verified and up-to-date procedures, voting protocols, and verification</p>
+        </div>
+
+        <!-- Search Bar Input -->
+        <div class="relative w-full md:w-80">
+          <label for="faq-search-input" class="sr-only">Search Frequently Asked Questions</label>
+          <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </span>
+          <input type="text" id="faq-search-input" placeholder="Search guidelines, mail ballots, IDs..." class="w-full pl-9 pr-4 py-2 text-xs font-semibold bg-white border border-slate-200 hover:border-slate-300 focus:border-brand-500 dark:bg-slate-900 dark:border-slate-800 rounded-xl shadow-sm transition-all focus:outline-none" aria-label="Search accordion details input">
+          <button id="clear-faq-search" class="hidden absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600" aria-label="Clear FAQ search filter">
+            <i class="fa-solid fa-circle-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- FAQ Accordion Parent Node -->
+      <div id="faq-accordion-container" class="space-y-3">
+        <!-- Rendered Dynamically by JS to ensure full search indexing -->
+      </div>
+    </section>
+
+    <!-- RESULTS CIVIC ENGAGEMENT PASSPORT DASHBOARD (FEATURE 6) -->
+    <section id="dashboard-section" class="glass-card rounded-2xl p-6 md:p-8 bg-gradient-to-r from-slate-50/50 via-white/80 to-slate-50/50 dark:from-slate-950/20 dark:via-slate-900/40 dark:to-slate-950/20" aria-labelledby="dashboard-title">
+      
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-200/60 dark:border-slate-800/60">
+        <div>
+          <h2 id="dashboard-title" class="text-2xl font-bold flex items-center gap-2 display-font">
+            <i class="fa-solid fa-id-card text-brand-600 dark:text-indigo-400"></i> Civic Engagement Passport
+          </h2>
+          <p class="text-xs text-slate-500 mt-1">A consolidated registry summary of your voter education training and accomplishments</p>
+        </div>
+
+        <button id="print-passport-btn" class="px-5 py-3 text-xs font-bold text-white bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 shadow-md shadow-brand-500/10 rounded-xl transition-all flex items-center gap-2 self-start md:self-auto hover:-translate-y-0.5" aria-label="Print official citizen certificate copy">
+          <i class="fa-solid fa-print"></i> Print Civic Passport
+        </button>
+      </div>
+
+      <!-- Dashboard Stats Registry Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        
+        <!-- STEPPER STATUS METER -->
+        <div class="bg-white/50 dark:bg-slate-900/50 border border-slate-200/50 dark:border-slate-800/80 rounded-xl p-5 shadow-sm flex items-center gap-4">
+          <div class="relative w-16 h-16 flex items-center justify-center flex-shrink-0">
+            <!-- SVG Progress Ring Circle -->
+            <svg class="w-full h-full transform -rotate-90">
+              <circle cx="32" cy="32" r="26" stroke-width="4" stroke="currentColor" class="text-slate-200 dark:text-slate-800" fill="transparent" />
+              <circle cx="32" cy="32" r="26" stroke-width="5" stroke="currentColor" class="text-brand-600 dark:text-indigo-400 transition-all duration-500" stroke-dasharray="163.36" stroke-dashoffset="163.36" id="dashboard-ring-fill" fill="transparent" />
+            </svg>
+            <span id="dashboard-journey-percent" class="absolute font-bold text-[10px]">0%</span>
+          </div>
+          <div>
+            <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Journey Progress</span>
+            <h3 id="dashboard-journey-status" class="text-sm font-bold mt-0.5">0 of 6 Steps Done</h3>
+            <p class="text-[11px] text-slate-500">Read stages sequentially</p>
+          </div>
+        </div>
+
+        <!-- CIVIC KNOWLEDGE SCORE CARD -->
+        <div class="bg-white/50 dark:bg-slate-900/50 border border-slate-200/50 dark:border-slate-800/80 rounded-xl p-5 shadow-sm flex items-center gap-4">
+          <div class="w-16 h-16 rounded-xl bg-indigo-50 dark:bg-indigo-950/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-3xl flex-shrink-0" id="dashboard-quiz-visual">
+            <i class="fa-solid fa-graduation-cap"></i>
+          </div>
+          <div>
+            <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Knowledge Rating</span>
+            <h3 id="dashboard-quiz-status" class="text-sm font-bold mt-0.5">Quiz Pending</h3>
+            <p id="dashboard-quiz-tag" class="text-[11px] text-slate-500">Take 10 question quiz above</p>
+          </div>
+        </div>
+
+        <!-- SIMULATED BALLOT RECEIPT -->
+        <div class="bg-white/50 dark:bg-slate-900/50 border border-slate-200/50 dark:border-slate-800/80 rounded-xl p-5 shadow-sm flex items-center gap-4">
+          <div class="w-16 h-16 rounded-xl bg-amber-50 dark:bg-amber-950/20 text-amber-600 dark:text-amber-400 flex items-center justify-center text-3xl flex-shrink-0" id="dashboard-sim-visual">
+            <i class="fa-solid fa-check-to-slot"></i>
+          </div>
+          <div>
+            <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Cast Simulator Vote</span>
+            <h3 id="dashboard-sim-status" class="text-sm font-bold mt-0.5">Ballot Not Cast</h3>
+            <p id="dashboard-sim-tag" class="text-[11px] text-slate-500">Demo voting systems above</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- PERSONALIZED RECOMMENDATIONS FEED -->
+      <div class="p-5 rounded-2xl bg-indigo-50/40 dark:bg-slate-900/60 border border-indigo-100/30 dark:border-slate-800/80">
+        <h3 class="font-bold text-xs uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-list-check"></i> Directed Action Checklist Recommendations
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="dashboard-action-items">
+          <!-- Populated Dynamically by JS -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- PRINT ARCHIVE CERTIFICATE CONTAINER (HIDDEN ON SCREEN, ISOLATED PRINT VIEW) -->
+  <div id="print-certificate-container" class="hidden">
+    <div style="border: 10px double #4f46e5; padding: 40px; text-align: center; font-family: 'Poppins', sans-serif;">
+      <h1 style="font-size: 32px; color: #4f46e5; margin-bottom: 5px;">CERTIFICATE OF CIVIC AWARENESS</h1>
+      <span style="font-size: 11px; letter-spacing: 2px; color: #64748b; font-weight: bold; text-transform: uppercase;">Awarded by VoteGuide Initiative</span>
+      
+      <div style="margin: 40px 0;">
+        <p style="font-size: 16px; line-height: 1.6; color: #0f172a; max-width: 500px; margin: 0 auto;">
+          This official passport registers that the bearer has completed the comprehensive <strong>Election Process Education course</strong>, demonstrating understanding of registration rules, candidate research, voting systems, and democratic principles.
+        </p>
+      </div>
+
+      <div style="display: grid; grid-template-cols: 1fr 1fr; border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; padding: 20px 0; margin-bottom: 40px; font-size: 12px; font-weight: bold; text-align: left; max-width: 400px; margin-left: auto; margin-right: auto;">
+        <div style="margin-bottom: 10px;">
+          <span style="color: #94a3b8; display: block; font-size: 9px; uppercase;">Journey Stages Resolved:</span>
+          <span id="print-journey-val">0 / 6 Stages</span>
+        </div>
+        <div style="margin-bottom: 10px;">
+          <span style="color: #94a3b8; display: block; font-size: 9px; uppercase;">Civic Quiz Rating Score:</span>
+          <span id="print-quiz-val">Uncompleted</span>
+        </div>
+        <div>
+          <span style="color: #94a3b8; display: block; font-size: 9px; uppercase;">Voting Ballot Sim Choice:</span>
+          <span id="print-vote-val">Ballot Secrecy Maintained</span>
+        </div>
+        <div>
+          <span style="color: #94a3b8; display: block; font-size: 9px; uppercase;">Passport Date Registered:</span>
+          <span id="print-date-val"></span>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; max-width: 400px; margin: 0 auto; font-size: 11px; font-weight: bold;">
+        <div>
+          <div style="width: 120px; border-bottom: 1px solid #0f172a; margin-bottom: 5px;"></div>
+          <span>Registrant Signature</span>
+        </div>
+        <div style="font-size: 24px; color: #4f46e5;">
+          <i class="fa-solid fa-stamp"></i>
+        </div>
+        <div>
+          <div style="width: 120px; border-bottom: 1px solid #4f46e5; margin-bottom: 5px; font-family: cursive; color: #4f46e5;">VoteGuide System</div>
+          <span>Authorized Registrar</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global Footer -->
+  <footer class="glass-card mt-auto border-t border-slate-200/60 dark:border-slate-800/60 py-8 text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+      
+      <!-- Copy info -->
+      <div class="space-y-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-check-to-slot text-brand-600 text-base"></i>
+          <span class="font-bold text-sm text-slate-900 dark:text-slate-200">VoteGuide Education</span>
+        </div>
+        <p class="leading-relaxed">
+          An open-source non-partisan civic learning engine dedicated to promoting transparent voter rights knowledge and public awareness. No private identifiers collected.
+        </p>
+        <span class="block text-[11px]">&copy; <span id="footer-year">2026</span> VoteGuide Project. Under MIT License.</span>
+      </div>
+
+      <!-- Quick Section Anchor Links -->
+      <div class="space-y-3">
+        <span class="block font-bold text-slate-900 dark:text-slate-200 text-sm">System Map Anchors</span>
+        <ul class="space-y-2 font-semibold">
+          <li><a href="#deadlines-section" class="hover:text-indigo-500 transition-colors">Deadlines Tracker</a></li>
+          <li><a href="#journey-section" class="hover:text-indigo-500 transition-colors">Voter Stepper Route</a></li>
+          <li><a href="#simulator-section" class="hover:text-indigo-500 transition-colors">Interactive Balloting Tally</a></li>
+          <li><a href="#quiz-section" class="hover:text-indigo-500 transition-colors">Civic Trivia Certification</a></li>
+          <li><a href="#faq-section" class="hover:text-indigo-500 transition-colors">Voter Rights Database FAQ</a></li>
+        </ul>
+      </div>
+
+      <!-- Accessible Help & Settings Summary Shortcuts -->
+      <div class="space-y-3" id="keyboard-guide">
+        <span class="block font-bold text-slate-900 dark:text-slate-200 text-sm">A11y Helper & Hotkeys</span>
+        <p class="leading-relaxed">
+          This system complies fully with WCAG 2.1 accessibility criteria, featuring full keyboard triggers:
+        </p>
+        <div class="grid grid-cols-2 gap-2 text-[10px] font-bold font-mono">
+          <div class="flex items-center gap-1.5"><kbd class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded">Tab</kbd> Move focus</div>
+          <div class="flex items-center gap-1.5"><kbd class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded">Space</kbd> Click item</div>
+          <div class="flex items-center gap-1.5"><kbd class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded">Esc</kbd> Close panels</div>
+          <div class="flex items-center gap-1.5"><kbd class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded">Alt + T</kbd> Contrast Switch</div>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ========================================== -->
+  <!-- STATE ENGINE & FEATURE JAVASCRIPT CODE -->
+  <!-- ========================================== -->
+  <script>
+    // ==========================================
+    // DATA & STATE ENGINE (AGENT 3 - DATA & LOGIC)
+    // ==========================================
+    
+    // Central Reactive AppState
+    const state = {
+      theme: 'light',
+      highContrast: false,
+      fontSize: 100, // percentage (100% to 125%)
+      
+      countdown: {
+        targetDate: new Date('2026-11-03T00:00:00'), // General presidential mock
+        activeType: 'national-general'
+      },
+      
+      journey: {
+        activeStep: 1,
+        completedSteps: [false, false, false, false, false, false],
+        checklistStates: [
+          [false, false, false],
+          [false, false, false],
+          [false, false, false],
+          [false, false, false],
+          [false, false, false],
+          [false, false, false]
+        ]
+      },
+      
+      simulator: {
+        votes: {
+          jenkins: 0,
+          vance: 0,
+          rostova: 0,
+          writein: 0
+        },
+        hasCastVote: false,
+        lastVoteSelection: null
+      },
+      
+      quiz: {
+        status: 'untested', // 'untested', 'active', 'finished'
+        currentQuestionIndex: 0,
+        score: 0,
+        selectedOption: null,
+        isAnswerLocked: false
+      }
+    };
+
+    // Preload items from local storage if existing
+    function loadFromLocalStorage() {
+      try {
+        const storedTheme = localStorage.getItem('vg_theme');
+        if (storedTheme) {
+          state.theme = storedTheme;
+          applyTheme(storedTheme);
+        } else {
+          // Detect browser auto dark mode
+          if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            state.theme = 'dark';
+            applyTheme('dark');
+          }
+        }
+        
+        const hc = localStorage.getItem('vg_high_contrast');
+        if (hc) {
+          state.highContrast = hc === 'true';
+          applyHighContrast(state.highContrast);
+        }
+        
+        const fs = localStorage.getItem('vg_font_size');
+        if (fs) {
+          state.fontSize = parseInt(fs);
+          applyFontSize(state.fontSize);
+        }
+
+        const jComplete = localStorage.getItem('vg_journey_completed');
+        if (jComplete) {
+          state.journey.completedSteps = JSON.parse(jComplete);
+        }
+
+        const jChecklist = localStorage.getItem('vg_journey_checklist');
+        if (jChecklist) {
+          state.journey.checklistStates = JSON.parse(jChecklist);
+        }
+
+        const simVotes = localStorage.getItem('vg_sim_votes');
+        if (simVotes) {
+          state.simulator.votes = JSON.parse(simVotes);
+        }
+        const hasVoted = localStorage.getItem('vg_sim_has_voted');
+        if (hasVoted) {
+          state.simulator.hasCastVote = hasVoted === 'true';
+        }
+        const lastVote = localStorage.getItem('vg_sim_last_vote');
+        if (lastVote) {
+          state.simulator.lastVoteSelection = lastVote;
+        }
+
+        const quizSaved = localStorage.getItem('vg_quiz_saved');
+        if (quizSaved) {
+          const q = JSON.parse(quizSaved);
+          state.quiz.status = q.status;
+          state.quiz.score = q.score;
+        }
+      } catch (e) {
+        console.warn("Local storage retrieval failed, using fallback dynamic variables.", e);
+      }
+    }
+
+    function saveToLocalStorage() {
+      try {
+        localStorage.setItem('vg_theme', state.theme);
+        localStorage.setItem('vg_high_contrast', state.highContrast);
+        localStorage.setItem('vg_font_size', state.fontSize);
+        localStorage.setItem('vg_journey_completed', JSON.stringify(state.journey.completedSteps));
+        localStorage.setItem('vg_journey_checklist', JSON.stringify(state.journey.checklistStates));
+        localStorage.setItem('vg_sim_votes', JSON.stringify(state.simulator.votes));
+        localStorage.setItem('vg_sim_has_voted', state.simulator.hasCastVote);
+        if (state.simulator.lastVoteSelection) {
+          localStorage.setItem('vg_sim_last_vote', state.simulator.lastVoteSelection);
+        }
+        localStorage.setItem('vg_quiz_saved', JSON.stringify({
+          status: state.quiz.status,
+          score: state.quiz.score
+        }));
+      } catch (e) {
+        console.warn("Storage writing restricted by sandbox sandboxed parameters.", e);
+      }
+    }
+
+    // Trigger update calls to dashboards and widgets
+    function onStateChange() {
+      saveToLocalStorage();
+      updateJourneyUI();
+      updateDashboardUI();
+      if (chartsLoaded) {
+        drawCharts();
+      }
+    }
+
+    // ==========================================
+    // ACCESSIBILITY & CONTRAST CONFIG (AGENT 1 - UI ARCHITECT)
+    // ==========================================
+    
+    function applyTheme(theme) {
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+
+    function applyHighContrast(enable) {
+      const body = document.getElementById('app-body');
+      const switchDot = document.getElementById('high-contrast-dot');
+      const switchBtn = document.getElementById('high-contrast-toggle');
+      
+      if (enable) {
+        body.classList.add('high-contrast');
+        switchDot.classList.replace('translate-x-0', 'translate-x-5');
+        switchBtn.setAttribute('aria-checked', 'true');
+      } else {
+        body.classList.remove('high-contrast');
+        switchDot.classList.replace('translate-x-5', 'translate-x-0');
+        switchBtn.setAttribute('aria-checked', 'false');
+      }
+    }
+
+    function applyFontSize(size) {
+      document.documentElement.style.fontSize = `${(size / 100) * 16}px`;
+      document.getElementById('font-size-percentage').innerText = `${size}%`;
+    }
+
+    // Bind accessibility triggers
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+      state.theme = state.theme === 'light' ? 'dark' : 'light';
+      applyTheme(state.theme);
+      onStateChange();
+    });
+
+    document.getElementById('high-contrast-toggle').addEventListener('click', () => {
+      state.highContrast = !state.highContrast;
+      applyHighContrast(state.highContrast);
+      onStateChange();
+    });
+
+    document.getElementById('font-increase').addEventListener('click', () => {
+      if (state.fontSize < 125) {
+        state.fontSize += 5;
+        applyFontSize(state.fontSize);
+        onStateChange();
+      }
+    });
+
+    document.getElementById('font-decrease').addEventListener('click', () => {
+      if (state.fontSize > 100) {
+        state.fontSize -= 5;
+        applyFontSize(state.fontSize);
+        onStateChange();
+      }
+    });
+
+    // Toggle custom accessibility panel drawer
+    const a11yPanel = document.getElementById('a11y-control-panel');
+    document.getElementById('quick-a11y-toggle').addEventListener('click', (e) => {
+      e.stopPropagation();
+      a11yPanel.classList.toggle('hidden');
+    });
+    document.getElementById('close-a11y-btn').addEventListener('click', () => {
+      a11yPanel.classList.add('hidden');
+    });
+    
+    // Close panels on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        a11yPanel.classList.add('hidden');
+      }
+      
+      // Accessibility toggle Hotkey: Alt + T (Toggle Contrast)
+      if (e.altKey && (e.key === 't' || e.key === 'T')) {
+        state.highContrast = !state.highContrast;
+        applyHighContrast(state.highContrast);
+        onStateChange();
+      }
+    });
+
+    // ==========================================
+    // COUNTDOWN TRACKER LOGIC (FEATURE 2)
+    // ==========================================
+    
+    const deadlines = {
+      'national-general': new Date('2026-11-03T00:00:00'),
+      'voter-reg-cutoff': new Date('2026-10-04T00:00:00'),
+      'absentee-request': new Date('2026-10-20T00:00:00')
+    };
+
+    let countdownInterval;
+
+    function startCountdown() {
+      if (countdownInterval) clearInterval(countdownInterval);
+      
+      updateCountdownValues();
+      countdownInterval = setInterval(updateCountdownValues, 1000);
+    }
+
+    function updateCountdownValues() {
+      const now = new Date();
+      const difference = state.countdown.targetDate - now;
+
+      // Extract HTML components
+      const daysSpan = document.getElementById('timer-days');
+      const hoursSpan = document.getElementById('timer-hours');
+      const minutesSpan = document.getElementById('timer-minutes');
+      const secondsSpan = document.getElementById('timer-seconds');
+      
+      const banner = document.getElementById('deadline-urgency-banner');
+      const alertTip = document.getElementById('deadline-status-tip');
+      const heading = document.getElementById('deadline-alert-heading');
+      const body = document.getElementById('deadline-alert-body');
+
+      if (difference <= 0) {
+        // Target Date elapsed
+        daysSpan.innerText = "00";
+        hoursSpan.innerText = "00";
+        minutesSpan.innerText = "00";
+        secondsSpan.innerText = "00";
+        
+        banner.className = "absolute top-0 left-0 right-0 h-1.5 bg-rose-600 animate-pulse";
+        alertTip.className = "p-3.5 rounded-xl text-xs bg-rose-50 border border-rose-100 text-rose-700 dark:bg-rose-950/20 dark:border-rose-900/30 dark:text-rose-300 flex items-start gap-2.5 transition-all";
+        heading.innerText = "Target Event Elapsed / Commenced.";
+        body.innerText = "Verify voting tallies or ballot certification parameters for official results.";
+        return;
+      }
+
+      // Calculations
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+      // Micro-animation triggers: pulse sizes slightly on digit transition
+      animateDigit(daysSpan, days);
+      animateDigit(hoursSpan, hours);
+      animateDigit(minutesSpan, minutes);
+      animateDigit(secondsSpan, seconds);
+
+      // Dynamic notifications styling based on date buffer sizes
+      if (days < 7) {
+        // Immediate alert state
+        banner.className = "absolute top-0 left-0 right-0 h-1.5 bg-rose-500 animate-pulse";
+        alertTip.className = "p-3.5 rounded-xl text-xs bg-rose-50 border border-rose-100 text-rose-700 dark:bg-rose-950/20 dark:border-rose-900/30 dark:text-rose-300 flex items-start gap-2.5 transition-all";
+        heading.innerText = "CRITICAL DEADLINE WARNING!";
+        body.innerText = `Only ${days} days remaining. Execute registrations or ballots immediately to secure validation!`;
+      } else if (days < 30) {
+        // Warning alert state
+        banner.className = "absolute top-0 left-0 right-0 h-1.5 bg-amber-500 animate-pulse-slow";
+        alertTip.className = "p-3.5 rounded-xl text-xs bg-amber-50 border border-amber-100 text-amber-700 dark:bg-amber-950/20 dark:border-amber-900/30 dark:text-amber-300 flex items-start gap-2.5 transition-all";
+        heading.innerText = "Urgent: Nearing Cut-off Threshold.";
+        body.innerText = `Approximately ${days} days left. Make sure to finalize your ballot submission planning today.`;
+      } else {
+        // Safe status state
+        banner.className = "absolute top-0 left-0 right-0 h-1.5 bg-indigo-500";
+        alertTip.className = "p-3.5 rounded-xl text-xs bg-indigo-50 border border-indigo-100 text-indigo-700 dark:bg-indigo-950/20 dark:border-indigo-900/30 dark:text-indigo-300 flex items-start gap-2.5 transition-all";
+        heading.innerText = "Pre-election window is healthy.";
+        body.innerText = `You have ample preparation headroom (${days} days remaining). Learn candidate profiles.`;
+      }
+    }
+
+    function animateDigit(element, val) {
+      const formatted = val < 10 ? `0${val}` : val;
+      if (element.innerText !== formatted.toString()) {
+        element.innerText = formatted;
+        element.classList.replace('scale-100', 'scale-110');
+        setTimeout(() => element.classList.replace('scale-110', 'scale-100'), 150);
+      }
+    }
+
+    // Select input handling
+    document.getElementById('election-selector').addEventListener('change', (e) => {
+      const val = e.target.value;
+      const customDatePicker = document.getElementById('custom-date-container');
+      
+      state.countdown.activeType = val;
+
+      if (val === 'custom') {
+        customDatePicker.classList.remove('hidden');
+        // Preset with custom date placeholder (100 days ahead)
+        const placeholderDate = new Date();
+        placeholderDate.setDate(placeholderDate.getDate() + 100);
+        const yyyy = placeholderDate.getFullYear();
+        const mm = String(placeholderDate.getMonth() + 1).padStart(2, '0');
+        const dd = String(placeholderDate.getDate()).padStart(2, '0');
+        
+        document.getElementById('custom-date-picker').value = `${yyyy}-${mm}-${dd}`;
+        state.countdown.targetDate = placeholderDate;
+      } else {
+        customDatePicker.classList.add('hidden');
+        state.countdown.targetDate = deadlines[val];
+      }
+      
+      startCountdown();
+      onStateChange();
+    });
+
+    // Custom calendar picker binding
+    document.getElementById('custom-date-picker').addEventListener('change', (e) => {
+      if (e.target.value) {
+        state.countdown.targetDate = new Date(`${e.target.value}T00:00:00`);
+        startCountdown();
+        onStateChange();
+      }
+    });
+
+    // ==========================================
+    // INTERACTIVE STEPPER MODULE (FEATURE 1)
+    // ==========================================
+    
+    const stepperData = [
+      {
+        step: 1,
+        title: "Check & Submit Voter Registration",
+        desc: "The absolute gateway milestone. To register, check state-specific cutoffs and submit digital or physical applications. Always verify that your profile is cleanly entered onto county registries before deadlines.",
+        icon: "fa-user-plus",
+        checklist: [
+          "Confirm legal age and citizenship guidelines in your local territory.",
+          "Fill out registration forms online or at municipal civic bureaus.",
+          "Verify spelling and address on voter registries using national search indexes."
+        ],
+        badge: "Registration Check"
+      },
+      {
+        step: 2,
+        title: "Research Candidates, Ballot Measures & Issues",
+        desc: "Civic integrity requires analytical assessment. Consult non-partisan candidate logs and informational profiles detailing competing civic factions. Separate bias from factual platform records.",
+        icon: "fa-book-open",
+        checklist: [
+          "Consult certified non-partisan guidelines and informational pamphlets.",
+          "Review policy agendas concerning infrastructures, taxation, and community programs.",
+          "Watch debates to understand stances on core local and national issues."
+        ],
+        badge: "Candidate Research"
+      },
+      {
+        step: 3,
+        title: "Construct an Action Ballot Plan",
+        desc: "Decide exactly *how* and *when* you will participate. Research early voting schedules, absentee applications, or look up your designated Election Day precinct polling station location.",
+        icon: "fa-map-location-dot",
+        checklist: [
+          "Decide between casting early in-person, by-mail ballot, or day polling.",
+          "Determine transport arrangements and look up local center opening times.",
+          "Obtain an official copy of a sample ballot to review structure ahead of voting."
+        ],
+        badge: "Make Plan"
+      },
+      {
+        step: 4,
+        title: "Consolidate Registration credentials & ID Rules",
+        desc: "Ensure you meet critical precinct ID checklists on election day. Many locales require validated state identifications, utility billing archives, or voter status cards.",
+        icon: "fa-id-card",
+        checklist: [
+          "Determine if your precinct requires photo ID, signatures, or secondary verification.",
+          "Collect birth registry papers, driver logs, or utility statements in a folder.",
+          "Double check rules regarding provisional backup casting in emergencies."
+        ],
+        badge: "ID Prep"
+      },
+      {
+        step: 5,
+        title: "Cast Your Official Ballot",
+        desc: "Step up and mark your choices securely! Follow all polling worker recommendations, carefully color voting boxes, and submit your ballot through verified scanning machines.",
+        icon: "fa-box-archive",
+        checklist: [
+          "Present certified IDs to clerk and obtain clean voting ballot forms.",
+          "Read instructions carefully: fill options completely with designated pens.",
+          "Feed the ballot directly into verified optical scanner counting slots."
+        ],
+        badge: "Cast Ballot"
+      },
+      {
+        step: 6,
+        title: "Verify Outcomes & Certifications",
+        desc: "Elections are completed only after thorough validation protocols. Witness mock simulations, track county certification updates, and appreciate the rigorous processes protecting security.",
+        icon: "fa-square-check",
+        checklist: [
+          "Understand how write-ins, mail-ins and provisionals are reconciled.",
+          "Follow local clerk audit boards certifying official results.",
+          "Acknowledge the balance of plurality systems in community leadership."
+        ],
+        badge: "Verify Results"
+      }
+    ];
+
+    function initJourneyStepper() {
+      // Bind navigation step buttons
+      for (let i = 1; i <= 6; i++) {
+        document.getElementById(`step-btn-${i}`).addEventListener('click', () => {
+          state.journey.activeStep = i;
+          renderActiveStepDetails();
+          onStateChange();
+        });
+
+        // Keyboard accessibility
+        document.getElementById(`step-btn-${i}`).addEventListener('keydown', (e) => {
+          if (e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault();
+            state.journey.activeStep = i;
+            renderActiveStepDetails();
+            onStateChange();
+          }
+        });
+      }
+
+      // Completed button action
+      document.getElementById('step-complete-btn').addEventListener('click', () => {
+        const activeIdx = state.journey.activeStep - 1;
+        const currentComplete = state.journey.completedSteps[activeIdx];
+        
+        // Toggle step completion status and sync checklist
+        state.journey.completedSteps[activeIdx] = !currentComplete;
+        
+        // Sync all subtasks to this state
+        state.journey.checklistStates[activeIdx] = state.journey.checklistStates[activeIdx].map(() => !currentComplete);
+        
+        onStateChange();
+        renderActiveStepDetails();
+      });
+
+      renderActiveStepDetails();
+    }
+
+    function toggleChecklistItem(itemIdx) {
+      const activeIdx = state.journey.activeStep - 1;
+      state.journey.checklistStates[activeIdx][itemIdx] = !state.journey.checklistStates[activeIdx][itemIdx];
+      
+      // If all subtasks are checked, mark step complete. Otherwise, incomplete.
+      const allChecked = state.journey.checklistStates[activeIdx].every(c => c);
+      state.journey.completedSteps[activeIdx] = allChecked;
+      
+      onStateChange();
+      renderActiveStepDetails();
+    }
+
+    function renderActiveStepDetails() {
+      const activeStepObj = stepperData[state.journey.activeStep - 1];
+      const displayArea = document.getElementById('step-display-area');
+      const checklistArea = document.getElementById('step-checklist');
+      const completeBtn = document.getElementById('step-complete-btn');
+
+      // Update layout panel contents dynamically
+      displayArea.innerHTML = `
+        <div class="flex items-center space-x-3 text-indigo-600 dark:text-indigo-400">
+          <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/20 flex items-center justify-center text-lg">
+            <i class="fa-solid ${activeStepObj.icon}"></i>
+          </div>
+          <div>
+            <span class="text-[10px] uppercase font-bold tracking-widest text-slate-400">Step ${activeStepObj.step} of 6</span>
+            <h3 class="font-bold text-sm text-slate-900 dark:text-slate-100">${activeStepObj.title}</h3>
+          </div>
+        </div>
+        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-normal">${activeStepObj.desc}</p>
+      `;
+
+      // Render milestones checklist with active checkboxes
+      checklistArea.innerHTML = activeStepObj.checklist.map((item, index) => {
+        const isChecked = state.journey.checklistStates[state.journey.activeStep - 1][index];
+        const checkboxId = `checklist-item-${state.journey.activeStep}-${index}`;
+        return `
+          <li class="flex items-center gap-3 text-slate-600 dark:text-slate-300 py-1">
+            <input type="checkbox" id="${checkboxId}" class="w-4 h-4 text-brand-600 border-slate-300 rounded focus:ring-brand-500 cursor-pointer" ${isChecked ? 'checked' : ''} onchange="toggleChecklistItem(${index})" aria-label="${item}">
+            <label for="${checkboxId}" class="cursor-pointer select-none text-xs font-semibold ${isChecked ? 'line-through text-slate-400 dark:text-slate-500' : ''}">${item}</label>
+          </li>
+        `;
+      }).join('');
+
+      // Render button status styles
+      const isCompleted = state.journey.completedSteps[state.journey.activeStep - 1];
+      if (isCompleted) {
+        completeBtn.innerHTML = `<i class="fa-solid fa-circle-check"></i> Completed (Click to Reset)`;
+        completeBtn.className = "px-5 py-2.5 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-md shadow-emerald-500/10 transition-all flex items-center gap-2";
+      } else {
+        completeBtn.innerHTML = `<i class="fa-regular fa-circle-check"></i> Mark Stage Completed`;
+        completeBtn.className = "px-5 py-2.5 text-xs font-bold bg-indigo-50 border border-indigo-100 hover:bg-brand-600 hover:text-white dark:bg-indigo-950/20 dark:border-indigo-900/50 dark:hover:bg-indigo-700 dark:hover:text-white text-indigo-700 dark:text-indigo-300 rounded-xl transition-all flex items-center gap-2";
+      }
+    }
+
+    function updateJourneyUI() {
+      // 1. Update node badge styles
+      for (let i = 1; i <= 6; i++) {
+        const btn = document.getElementById(`step-btn-${i}`);
+        const badge = document.getElementById(`step-badge-${i}`);
+        const label = document.getElementById(`step-label-${i}`);
+        const isSelected = state.journey.activeStep === i;
+        const isDone = state.journey.completedSteps[i - 1];
+
+        // Active selected attribute
+        btn.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+
+        // Style mapping
+        if (isDone) {
+          badge.className = "w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold bg-emerald-500 text-white shadow-md shadow-emerald-500/15 cursor-pointer ring-4 " + (isSelected ? "ring-emerald-500/30" : "ring-transparent");
+          badge.innerHTML = `<i class="fa-solid fa-check"></i>`;
+          label.className = "ml-4 sm:ml-0 sm:mt-2 text-xs font-bold text-emerald-600 dark:text-emerald-400 block";
+        } else if (isSelected) {
+          badge.className = "w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold bg-brand-600 text-white ring-4 ring-indigo-500/30 dark:ring-indigo-400/30 shadow-md shadow-brand-500/15 cursor-pointer";
+          badge.innerHTML = `<i class="fa-solid ${stepperData[i-1].icon}"></i>`;
+          label.className = "ml-4 sm:ml-0 sm:mt-2 text-xs font-bold text-brand-600 dark:text-indigo-300 block";
+        } else {
+          badge.className = "w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-300 dark:hover:bg-slate-700/60 cursor-pointer ring-4 ring-transparent";
+          badge.innerHTML = `<i class="fa-solid ${stepperData[i-1].icon}"></i>`;
+          label.className = "ml-4 sm:ml-0 sm:mt-2 text-xs font-semibold text-slate-500 dark:text-slate-400 block";
+        }
+      }
+
+      // 2. Update connecting progress line width (Percentage fill based on index of highest completed step)
+      let completedCount = 0;
+      state.journey.completedSteps.forEach(c => { if(c) completedCount++; });
+      
+      const fillPercentage = completedCount > 0 ? ((completedCount - 1) / 5) * 100 : 0;
+      document.getElementById('stepper-progress-line').style.width = `${fillPercentage}%`;
+      
+      // Update header journey badge
+      document.getElementById('header-journey-badge').innerText = `${completedCount}/6 Steps`;
+    }
+
+    // ==========================================
+    // MOCK VOTING SIMULATOR MODULE (FEATURE 5)
+    // ==========================================
+    
+    // Cast Single Vote
+    function castVote(candidateKey) {
+      if (state.simulator.hasCastVote) {
+        // Prevent double cast for realistic simulator demonstration
+        showNotification("⚠️ Demo Ballot Cast. To select alternate profiles, click 'Reset Simulation' first.", "warning");
+        return;
+      }
+
+      state.simulator.votes[candidateKey]++;
+      state.simulator.hasCastVote = true;
+      state.simulator.lastVoteSelection = candidateKey;
+
+      showNotification(`🗳️ Demo Ballot securely cast for ${getCandidateName(candidateKey)}!`, "success");
+      onStateChange();
+    }
+
+    function getCandidateName(key) {
+      switch (key) {
+        case 'jenkins': return 'Sarah Jenkins';
+        case 'vance': return 'Marcus Vance';
+        case 'rostova': return 'Elena Rostova';
+        default: return 'Write-in';
+      }
+    }
+
+    // Run Automated Scanning batch simulation
+    let isSimulating = false;
+    document.getElementById('run-sim-btn').addEventListener('click', () => {
+      if (isSimulating) return;
+      isSimulating = true;
+      
+      // Lock simulation controls
+      document.getElementById('run-sim-btn').disabled = true;
+      document.getElementById('reset-sim-btn').disabled = true;
+      document.getElementById('sim-progress-wrapper').classList.remove('hidden');
+
+      let currentIteration = 0;
+      const totalSimulated = 50;
+
+      const progressPercent = document.getElementById('sim-progress-percentage');
+      const progressBar = document.getElementById('sim-progress-bar');
+
+      const simInterval = setInterval(() => {
+        // Cast random votes among candidates (weighted slightly to represent typical splits)
+        const rand = Math.random();
+        let key = 'writein';
+        if (rand < 0.40) key = 'jenkins';
+        else if (rand < 0.75) key = 'vance';
+        else if (rand < 0.95) key = 'rostova';
+
+        state.simulator.votes[key]++;
+        
+        currentIteration++;
+        const percent = Math.floor((currentIteration / totalSimulated) * 100);
+        progressPercent.innerText = `${percent}%`;
+        progressBar.style.width = `${percent}%`;
+
+        // Update charts live in real time!
+        if (chartsLoaded) drawCharts();
+
+        if (currentIteration >= totalSimulated) {
+          clearInterval(simInterval);
+          isSimulating = false;
+          
+          document.getElementById('run-sim-btn').disabled = false;
+          document.getElementById('reset-sim-btn').disabled = false;
+          document.getElementById('sim-progress-wrapper').classList.add('hidden');
+          progressBar.style.width = '0%';
+          progressPercent.innerText = '0%';
+          
+          showNotification(`🚀 Batch tally processed successfully! Counted ${totalSimulated} mock ballots.`, "success");
+          onStateChange();
+        }
+      }, 50);
+    });
+
+    // Reset simulator counts
+    document.getElementById('reset-sim-btn').addEventListener('click', () => {
+      state.simulator.votes = { jenkins: 0, vance: 0, rostova: 0, writein: 0 };
+      state.simulator.hasCastVote = false;
+      state.simulator.lastVoteSelection = null;
+      
+      showNotification("🔄 Voting Simulator tallied values reset to zero.", "info");
+      onStateChange();
+    });
+
+    // Charts Tab selections
+    const tabPie = document.getElementById('tab-pie-btn');
+    const tabColumn = document.getElementById('tab-bar-btn');
+    const pieContainer = document.getElementById('pie-chart-container');
+    const barContainer = document.getElementById('bar-chart-container');
+
+    tabPie.addEventListener('click', () => {
+      tabPie.className = "flex-1 py-1.5 text-xs font-bold text-center bg-white dark:bg-slate-800 rounded-lg shadow-sm focus:outline-none";
+      tabColumn.className = "flex-1 py-1.5 text-xs font-semibold text-center text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 rounded-lg focus:outline-none";
+      pieContainer.classList.remove('hidden');
+      barContainer.classList.add('hidden');
+      tabPie.setAttribute('aria-selected', 'true');
+      tabColumn.setAttribute('aria-selected', 'false');
+      if (chartsLoaded) drawCharts();
+    });
+
+    tabColumn.addEventListener('click', () => {
+      tabColumn.className = "flex-1 py-1.5 text-xs font-bold text-center bg-white dark:bg-slate-800 rounded-lg shadow-sm focus:outline-none";
+      tabPie.className = "flex-1 py-1.5 text-xs font-semibold text-center text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 rounded-lg focus:outline-none";
+      pieContainer.classList.add('hidden');
+      barContainer.classList.remove('hidden');
+      tabPie.setAttribute('aria-selected', 'false');
+      tabColumn.setAttribute('aria-selected', 'true');
+      if (chartsLoaded) drawCharts();
+    });
+
+    // Toast notifications element creator
+    function showNotification(msg, type = "success") {
+      let toast = document.createElement("div");
+      toast.className = "fixed bottom-5 right-5 px-4 py-3 rounded-xl text-xs font-bold text-white shadow-2xl flex items-center gap-2 z-50 transform translate-y-10 opacity-0 transition-all duration-300";
+      
+      let icon = '<i class="fa-solid fa-circle-check"></i>';
+      if (type === "success") {
+        toast.classList.add("bg-emerald-600");
+      } else if (type === "warning") {
+        toast.classList.add("bg-amber-500");
+        icon = '<i class="fa-solid fa-circle-exclamation"></i>';
+      } else {
+        toast.classList.add("bg-indigo-600");
+        icon = '<i class="fa-solid fa-circle-info"></i>';
+      }
+
+      toast.innerHTML = `${icon} <span>${msg}</span>`;
+      document.body.appendChild(toast);
+      
+      // Animate entry
+      setTimeout(() => {
+        toast.classList.replace("translate-y-10", "translate-y-0");
+        toast.classList.replace("opacity-0", "opacity-100");
+      }, 10);
+
+      // Auto exit
+      setTimeout(() => {
+        toast.classList.replace("translate-y-0", "translate-y-10");
+        toast.classList.replace("opacity-100", "opacity-0");
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    // Initialize Google Charts configurations
+    let chartsLoaded = false;
+    let pieChart, barChart;
+
+    try {
+      if (typeof google !== 'undefined') {
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(initCharts);
+      } else {
+        console.warn("Google Charts library not available (offline fallback active)");
+      }
+    } catch (e) {
+      console.error("Google Charts loading failed:", e);
+    }
+
+    function initCharts() {
+      chartsLoaded = true;
+      drawCharts();
+    }
+
+    function drawCharts() {
+      if (!chartsLoaded) return;
+      
+      const total = state.simulator.votes.jenkins + state.simulator.votes.vance + state.simulator.votes.rostova + state.simulator.votes.writein;
+      
+      const placeholder = document.getElementById('chart-placeholder');
+      const wrapper = document.getElementById('charts-wrapper');
+
+      if (total === 0) {
+        placeholder.classList.remove('hidden');
+        wrapper.classList.add('hidden');
+        return;
+      } else {
+        placeholder.classList.add('hidden');
+        wrapper.classList.remove('hidden');
+      }
+
+      // Check current visual modes
+      const isDark = document.documentElement.classList.contains('dark');
+      const font = 'Inter';
+      const textColor = isDark ? '#cbd5e1' : '#1e293b';
+      const gridColor = isDark ? '#334155' : '#e2e8f0';
+
+      const isPieActive = !document.getElementById('pie-chart-container').classList.contains('hidden');
+
+      if (isPieActive) {
+        // 1. Draw Pie Chart
+        const pieData = google.visualization.arrayToDataTable([
+          ['Candidate', 'Votes'],
+          ['Sarah Jenkins', state.simulator.votes.jenkins],
+          ['Marcus Vance', state.simulator.votes.vance],
+          ['Elena Rostova', state.simulator.votes.rostova],
+          ['Write-In / Other', state.simulator.votes.writein]
+        ]);
+
+        const pieOptions = {
+          pieHole: 0.4,
+          colors: ['#6366f1', '#10b981', '#f59e0b', '#64748b'],
+          backgroundColor: 'transparent',
+          legend: { textStyle: { color: textColor, fontName: font, fontSize: 10 }, position: 'bottom' },
+          chartArea: { width: '90%', height: '70%' },
+          pieSliceBorderColor: isDark ? '#0f172a' : '#ffffff',
+          tooltip: { textStyle: { fontName: font, fontSize: 11 } }
+        };
+
+        if (!pieChart) {
+          pieChart = new google.visualization.PieChart(document.getElementById('pie-chart-container'));
+        }
+        pieChart.draw(pieData, pieOptions);
+      } else {
+        // 2. Draw Column Chart
+        const barData = google.visualization.arrayToDataTable([
+          ['Candidate', 'Votes', { role: 'style' }],
+          ['S. Jenkins', state.simulator.votes.jenkins, '#6366f1'],
+          ['M. Vance', state.simulator.votes.vance, '#10b981'],
+          ['E. Rostova', state.simulator.votes.rostova, '#f59e0b'],
+          ['Other', state.simulator.votes.writein, '#64748b']
+        ]);
+
+        const barOptions = {
+          backgroundColor: 'transparent',
+          legend: { position: 'none' },
+          chartArea: { width: '80%', height: '70%' },
+          hAxis: {
+            textStyle: { color: textColor, fontName: font, fontSize: 9 },
+            gridlines: { color: gridColor }
+          },
+          vAxis: {
+            textStyle: { color: textColor, fontName: font, fontSize: 9 },
+            minValue: 0,
+            gridlines: { color: gridColor }
+          }
+        };
+
+        if (!barChart) {
+          barChart = new google.visualization.ColumnChart(document.getElementById('bar-chart-container'));
+        }
+        barChart.draw(barData, barOptions);
+      }
+    }
+
+    // Auto redraw charts on window resizing
+    window.addEventListener('resize', () => {
+      if (chartsLoaded) drawCharts();
+    });
+
+    // ==========================================
+    // INTERACTIVE QUIZ MODULE (FEATURE 3)
+    // ==========================================
+    
+    const quizQuestions = [
+      {
+        question: "What is the primary operational purpose of Voter Registration?",
+        options: [
+          "To collect mandatory community demographic profiles for taxation records.",
+          "To verify citizen eligibility status and establish precinct registries to prevent double voting.",
+          "To distribute political party membership brochures prior to campaign launches.",
+          "To assign mandatory community service shifts for the local municipal government."
+        ],
+        correct: 1,
+        explanation: "Registration acts as a security safeguard. It verifies a voter's residency and legal eligibility status, and places their name on localized registries to ensure a clean, double-vote free count."
+      },
+      {
+        question: "In most democratic systems, who holds legal eligibility to vote in general elections?",
+        options: [
+          "Only residents who pay state property taxes and hold active commercial business license portfolios.",
+          "Any citizen who has resided in the territory for over 10 consecutive years.",
+          "Any resident holding a high school diploma or equivalent certificate of civic studies.",
+          "Adult citizens who satisfy age, sanity, and residency criteria and are registered."
+        ],
+        correct: 3,
+        explanation: "Universal adult suffrage limits voting barriers to objective parameters: legal adult age, validated citizenship, and formal enrollment on regional voter registers."
+      },
+      {
+        question: "What constitutes an Absentee Ballot?",
+        options: [
+          "A ballot completed by paper or digitally by voters unable to cast in-person at physical polls.",
+          "A replacement ballot issued to a voter who has moved to a different state.",
+          "A ballot cast in a primary election by a voter who is not registered with any party.",
+          "A mock ballot used for educational simulations in elementary schools."
+        ],
+        correct: 0,
+        explanation: "Absentee or mail-in voting allows citizens to secure, print, fill, and mail ballot documents without visiting a physical voting center on election day."
+      },
+      {
+        question: "In general elections, what does 'Plurality voting' specifically mean?",
+        options: [
+          "The winning candidate must attain at least 75% of total votes cast.",
+          "The candidate securing the absolute highest volume of votes wins, even if short of an absolute majority.",
+          "An election is invalidated and rerun if voter turnout is less than 50%.",
+          "Voters must select multiple candidates in order of preference on their ballot."
+        ],
+        correct: 1,
+        explanation: "Unlike 'Majority voting' which mandates over 50% threshold wins, 'Plurality voting' awards victory to whichever candidate gains the highest raw number, regardless of percentages."
+      },
+      {
+        question: "Why do political parties hold Primary Elections?",
+        options: [
+          "To finalize the annual state capital municipal expenditure project distributions.",
+          "To select a unified political party representative candidate for the upcoming general election.",
+          "To collect donations and run initial fundraising campaigns for charities.",
+          "To draft and debate the official constitution of the nation."
+        ],
+        correct: 1,
+        explanation: "Primaries act as democratic elimination stages where members of a specific political coalition vote to select their one official flag-bearer for the general election."
+      },
+      {
+        question: "What defines a genuine 'Non-Partisan' Voter Guide?",
+        options: [
+          "An advisory newsletter funded directly by candidate campaign committees.",
+          "A resource that provides neutral, factual analysis of agendas and issues without endorsing any candidate.",
+          "A voter guide that is distributed exclusively to unregistered voters.",
+          "An editorial piece advocating for a specific political philosophy or party."
+        ],
+        correct: 1,
+        explanation: "Non-partisan publications are compiled by independent groups to clarify ballot measures and platforms objectively, maintaining complete neutrality and taking no sides."
+      },
+      {
+        question: "What is an election 'Polling Place' or precinct station?",
+        options: [
+          "The offices where local government officials certify candidate applications.",
+          "A designated facility where voters within a specific geographic boundary cast ballots.",
+          "A digital server room hosting voter databases.",
+          "The main headquarters of the national election administration."
+        ],
+        correct: 1,
+        explanation: "To preserve organization, jurisdictions partition towns into geographic precincts, directing residents of each region to a nearby neighborhood school, church, or library to vote."
+      },
+      {
+        question: "What constitutes a mathematical 'Majority' in election tallies?",
+        options: [
+          "Securing any total vote score that is greater than 30% of total cast ballots.",
+          "Attaining more than 50% of the complete legitimate vote count.",
+          "Having more registered voters in your district than your opponent.",
+          "Gaining a higher total vote count in rural areas than in urban centers."
+        ],
+        correct: 1,
+        explanation: "A majority represents an absolute dominant half—meaning a candidate must secure 50% plus at least one additional vote of the total ballots cast to win."
+      },
+      {
+        question: "What is the primary role of Election Poll Workers on Election Day?",
+        options: [
+          "To campaign for their preferred candidates outside the polling place.",
+          "To manage precinct logistics, verify identities, distribute ballots, and protect process integrity.",
+          "To count and certify the official results of the election.",
+          "To transport voters to and from the polling place."
+        ],
+        correct: 1,
+        explanation: "Poll workers are trained citizen volunteers who set up voting machines, assist disabled voters, check names against registries, and enforce ballot box security."
+      },
+      {
+        question: "What is the ultimate purpose of official Election Certification?",
+        options: [
+          "To authorize the printing of sample ballots for the next election cycle.",
+          "To formally review, audit, and finalize the official vote tallies as mathematically complete.",
+          "To swear in the winning candidates into office immediately on election night.",
+          "To verify that all registered voters actually cast a ballot."
+        ],
+        correct: 1,
+        explanation: "Certification is the final administrative audit step where canvassing boards verify all precinct books reconcile, absentee bags are verified, and official counts are declared final."
+      }
+    ];
+
+    function initCivicQuiz() {
+      document.getElementById('start-quiz-btn').addEventListener('click', () => {
+        state.quiz.status = 'active';
+        state.quiz.currentQuestionIndex = 0;
+        state.quiz.score = 0;
+        state.quiz.isAnswerLocked = false;
+        state.quiz.selectedOption = null;
+
+        document.getElementById('quiz-start-screen').classList.add('hidden');
+        document.getElementById('quiz-results-screen').classList.add('hidden');
+        document.getElementById('quiz-active-screen').classList.remove('hidden');
+
+        renderQuizQuestion();
+        onStateChange();
+      });
+
+      document.getElementById('quiz-next-btn').addEventListener('click', () => {
+        if (state.quiz.currentQuestionIndex < quizQuestions.length - 1) {
+          state.quiz.currentQuestionIndex++;
+          state.quiz.isAnswerLocked = false;
+          state.quiz.selectedOption = null;
+          renderQuizQuestion();
+        } else {
+          // Finished quiz!
+          state.quiz.status = 'finished';
+          showQuizResults();
+        }
+        onStateChange();
+      });
+
+      document.getElementById('retry-quiz-btn').addEventListener('click', () => {
+        state.quiz.status = 'active';
+        state.quiz.currentQuestionIndex = 0;
+        state.quiz.score = 0;
+        state.quiz.isAnswerLocked = false;
+        state.quiz.selectedOption = null;
+
+        document.getElementById('quiz-results-screen').classList.add('hidden');
+        document.getElementById('quiz-active-screen').classList.remove('hidden');
+
+        renderQuizQuestion();
+        onStateChange();
+      });
+      
+      // Load saved state representation if finished
+      if (state.quiz.status === 'finished') {
+        showQuizResults();
+      }
+    }
+
+    function renderQuizQuestion() {
+      const qObj = quizQuestions[state.quiz.currentQuestionIndex];
+      
+      // Update progress bar
+      const progressPercent = ((state.quiz.currentQuestionIndex + 1) / quizQuestions.length) * 100;
+      document.getElementById('quiz-progress-bar').style.width = `${progressPercent}%`;
+      document.getElementById('quiz-progress-text').innerText = `${state.quiz.currentQuestionIndex + 1}/${quizQuestions.length}`;
+      document.getElementById('quiz-score-tracker').innerText = `Score: ${state.quiz.score}`;
+
+      // Set Text
+      document.getElementById('quiz-question-text').innerText = qObj.question;
+
+      // Render Options
+      const optionsPanel = document.getElementById('quiz-options-panel');
+      optionsPanel.innerHTML = qObj.options.map((opt, idx) => {
+        return `
+          <button class="w-full text-left p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/40 dark:bg-slate-900/40 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 font-medium text-xs flex items-start gap-3 group transition-all" onclick="selectQuizOption(${idx})" id="quiz-opt-btn-${idx}" aria-label="Option ${idx + 1}: ${opt}">
+            <span class="w-5 h-5 rounded-full border border-slate-300 dark:border-slate-600 flex items-center justify-center text-[10px] font-bold text-slate-400 group-hover:border-slate-400 group-hover:text-slate-500 bg-white dark:bg-slate-950 flex-shrink-0" id="quiz-opt-label-${idx}">
+              ${String.fromCharCode(65 + idx)}
+            </span>
+            <span class="text-slate-700 dark:text-slate-300 leading-normal" id="quiz-opt-text-${idx}">${opt}</span>
+          </button>
+        `;
+      }).join('');
+
+      // Hide explanation pane & next button
+      document.getElementById('quiz-explanation-wrapper').classList.add('hidden');
+      document.getElementById('quiz-next-btn').classList.add('hidden');
+    }
+
+    function selectQuizOption(idx) {
+      if (state.quiz.isAnswerLocked) return;
+
+      const qObj = quizQuestions[state.quiz.currentQuestionIndex];
+      state.quiz.selectedOption = idx;
+      state.quiz.isAnswerLocked = true;
+
+      const isCorrect = idx === qObj.correct;
+      if (isCorrect) state.quiz.score++;
+
+      // Style options based on answer correctness
+      for (let i = 0; i < 4; i++) {
+        const btn = document.getElementById(`quiz-opt-btn-${i}`);
+        const label = document.getElementById(`quiz-opt-label-${i}`);
+
+        if (i === qObj.correct) {
+          // Highlight correct green
+          btn.className = "w-full text-left p-3 rounded-xl border-2 border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20 font-semibold text-xs flex items-start gap-3 transition-all";
+          label.className = "w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0";
+          label.innerHTML = '<i class="fa-solid fa-check"></i>';
+        } else if (i === idx) {
+          // Highlight incorrect red
+          btn.className = "w-full text-left p-3 rounded-xl border-2 border-rose-500 bg-rose-50/50 dark:bg-rose-950/20 font-semibold text-xs flex items-start gap-3 transition-all";
+          label.className = "w-5 h-5 rounded-full bg-rose-500 text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0";
+          label.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+        } else {
+          // Mute others
+          btn.className = "w-full text-left p-3 rounded-xl border border-slate-200/50 dark:border-slate-800/40 bg-white/20 dark:bg-slate-900/10 font-normal text-xs flex items-start gap-3 opacity-60 transition-all";
+        }
+      }
+
+      // Render Explanation
+      const explanationWrapper = document.getElementById('quiz-explanation-wrapper');
+      const verdictIcon = document.getElementById('quiz-verdict-icon');
+      const verdictHeading = document.getElementById('quiz-verdict-heading');
+      const explanationText = document.getElementById('quiz-explanation-text');
+
+      explanationWrapper.classList.remove('hidden');
+      explanationText.innerText = qObj.explanation;
+
+      if (isCorrect) {
+        explanationWrapper.className = "p-4 rounded-xl border border-emerald-200 bg-emerald-50/40 text-emerald-800 dark:border-emerald-900/30 dark:bg-emerald-950/10 dark:text-emerald-400 text-xs font-semibold leading-relaxed transition-all";
+        verdictIcon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+        verdictHeading.innerText = "Correct! Well reasoned.";
+      } else {
+        explanationWrapper.className = "p-4 rounded-xl border border-rose-200 bg-rose-50/40 text-rose-800 dark:border-rose-900/30 dark:bg-rose-950/10 dark:text-rose-400 text-xs font-semibold leading-relaxed transition-all";
+        verdictIcon.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
+        verdictHeading.innerText = "Incorrect Option Selected.";
+      }
+
+      // Reveal Next Question button
+      document.getElementById('quiz-next-btn').classList.remove('hidden');
+      
+      // Update header score tracker
+      document.getElementById('header-quiz-badge').innerText = `${state.quiz.score}/${quizQuestions.length}`;
+      onStateChange();
+    }
+
+    function showQuizResults() {
+      document.getElementById('quiz-active-screen').classList.add('hidden');
+      document.getElementById('quiz-start-screen').classList.add('hidden');
+      
+      const resScreen = document.getElementById('quiz-results-screen');
+      resScreen.classList.remove('hidden');
+
+      const total = quizQuestions.length;
+      const score = state.quiz.score;
+
+      document.getElementById('quiz-result-score').innerText = `${score}/${total}`;
+      document.getElementById('quiz-result-correct').innerText = score;
+      document.getElementById('quiz-result-incorrect').innerText = total - score;
+
+      const badgeVisual = document.getElementById('quiz-badge-visual');
+      const badgeTitle = document.getElementById('quiz-badge-title');
+      const badgeDesc = document.getElementById('quiz-badge-desc');
+
+      // Score classifications
+      if (score >= 9) {
+        badgeVisual.innerText = "🎖️";
+        badgeTitle.innerText = "Civic Mastermind";
+        badgeDesc.innerText = "Outstanding! You possess exemplary understanding of constitutional rights and voting protocols. You are ready to lead advocacy.";
+      } else if (score >= 6) {
+        badgeVisual.innerText = "🎓";
+        badgeTitle.innerText = "Engaged Citizen";
+        badgeDesc.innerText = "Great job! You have strong core knowledge of registration rules and ballot steps. Fully prepared to vote.";
+      } else {
+        badgeVisual.innerText = "📖";
+        badgeTitle.innerText = "Developing Voter";
+        badgeDesc.innerText = "A solid effort! We suggest reading the Voter Journey Stepper details and retaking the quiz to strengthen your knowledge.";
+      }
+      
+      // Sync badge
+      document.getElementById('header-quiz-badge').innerText = `${score}/${total}`;
+    }
+
+    // ==========================================
+    // FAQ KNOWLEDGE ACCORDION BASE (FEATURE 4)
+    // ==========================================
+    
+    const faqData = [
+      {
+        id: "faq-1",
+        question: "How can I check if I am registered to vote?",
+        answer: "To check your registration status, visit your local county clerk election board database portal. Most states offer an online registry search tool where entering your name, birthday and zip code provides active registration credentials instantly. We recommend checking this at least 30 days before election events."
+      },
+      {
+        id: "faq-2",
+        question: "What specific identification credentials do I need on polling days?",
+        answer: "Precinct rules vary widely depending on state statutes. Some districts mandate official state-issued photo IDs (drivers licenses, passports), while others accept utility bills, bank reports, or signature books. Consult your municipal registry database guide weeks before election day."
+      },
+      {
+        id: "faq-3",
+        question: "What is the operational difference between Early and Absentee voting?",
+        answer: "Early voting enables citizens to cast ballots physically at pre-selected municipal voting hubs before official election days. Absentee or mail-in voting allows you to request paper forms mailed to your residence, which you fill out privately and return via secured dropboxes or post bags."
+      },
+      {
+        id: "faq-4",
+        question: "What happens if my name does not appear on local precinct registers?",
+        answer: "Do not leave without voting! If your registry status is queried, you hold a legal right to request a Provisional Ballot. Polling clerks issue these distinct paper forms which are set aside and counted once election administrators verify your signature and registration eligibility."
+      },
+      {
+        id: "faq-5",
+        question: "How are mail-in ballots checked to prevent double-casting and fraud?",
+        answer: "Mail voting uses layers of rigorous validation. First, counting staff inspect the signature on returning envelopes and match it with signatures on official registration files. Second, unique barcodes prevent duplicate submission entries, invalidating any photocopy attempts instantly."
+      },
+      {
+        id: "faq-6",
+        question: "Can I cancel or alter my ballot choices once cast in the box?",
+        answer: "No. Once a physical ballot is fed into the precinct optical scanner or dropped into mailbox vaults, it is final. This protects ballot secrecy and audit integrity. In our education assistant, however, you can click 'Reset Simulation' anytime to tally again!"
+      }
+    ];
+
+    function initFAQAccordion() {
+      const container = document.getElementById('faq-accordion-container');
+      
+      container.innerHTML = faqData.map((faq, index) => {
+        return `
+          <div class="border border-slate-200/80 dark:border-slate-800/80 rounded-xl bg-white/40 dark:bg-slate-900/20 overflow-hidden transition-all duration-200" id="${faq.id}-wrapper">
+            <button class="w-full flex items-center justify-between p-4 text-left font-semibold text-xs md:text-sm text-slate-800 dark:text-slate-200 hover:bg-slate-100/40 dark:hover:bg-slate-800/30 transition-colors focus:outline-none" onclick="toggleAccordion('${faq.id}')" aria-expanded="false" aria-controls="${faq.id}-content" id="${faq.id}-btn">
+              <span id="${faq.id}-qtext">${faq.question}</span>
+              <span class="text-slate-400 dark:text-slate-600 transition-transform duration-200 flex-shrink-0 ml-3" id="${faq.id}-icon">
+                <i class="fa-solid fa-angle-down"></i>
+              </span>
+            </button>
+            <div id="${faq.id}-content" class="accordion-content border-t border-slate-100 dark:border-slate-800/60 bg-white/10 dark:bg-slate-950/10">
+              <p class="p-4 text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-normal" id="${faq.id}-atext">${faq.answer}</p>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Real-time fuzzy search event binding
+      const searchInput = document.getElementById('faq-search-input');
+      const clearBtn = document.getElementById('clear-faq-search');
+      
+      searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        
+        if (query.length > 0) {
+          clearBtn.classList.remove('hidden');
+        } else {
+          clearBtn.classList.add('hidden');
+        }
+
+        faqData.forEach(faq => {
+          const title = faq.question.toLowerCase();
+          const body = faq.answer.toLowerCase();
+          const wrapper = document.getElementById(`${faq.id}-wrapper`);
+
+          const isMatch = title.includes(query) || body.includes(query);
+
+          if (isMatch) {
+            wrapper.classList.remove('hidden');
+            // Highlight text matches
+            highlightText(`${faq.id}-qtext`, faq.question, query);
+            highlightText(`${faq.id}-atext`, faq.answer, query);
+          } else {
+            wrapper.classList.add('hidden');
+          }
+        });
+      });
+
+      clearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        clearBtn.classList.add('hidden');
+        
+        // Reset highlights and visibility
+        faqData.forEach(faq => {
+          document.getElementById(`${faq.id}-wrapper`).classList.remove('hidden');
+          document.getElementById(`${faq.id}-qtext`).innerHTML = faq.question;
+          document.getElementById(`${faq.id}-atext`).innerHTML = faq.answer;
+        });
+        
+        searchInput.focus();
+      });
+    }
+
+    function toggleAccordion(id) {
+      const btn = document.getElementById(`${id}-btn`);
+      const content = document.getElementById(`${id}-content`);
+      const icon = document.getElementById(`${id}-icon`);
+      const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+
+      // Toggle state representation
+      if (isExpanded) {
+        btn.setAttribute('aria-expanded', 'false');
+        content.style.maxHeight = '0px';
+        icon.classList.remove('rotate-180');
+      } else {
+        // Collapse all other accordions first for a very clean, professional experience!
+        faqData.forEach(faq => {
+          if (faq.id !== id) {
+            const otherBtn = document.getElementById(`${faq.id}-btn`);
+            const otherContent = document.getElementById(`${faq.id}-content`);
+            const otherIcon = document.getElementById(`${faq.id}-icon`);
+            
+            if (otherBtn && otherContent && otherIcon) {
+              otherBtn.setAttribute('aria-expanded', 'false');
+              otherContent.style.maxHeight = '0px';
+              otherIcon.classList.remove('rotate-180');
+            }
+          }
+        });
+
+        btn.setAttribute('aria-expanded', 'true');
+        content.style.maxHeight = content.scrollHeight + "px";
+        icon.classList.add('rotate-180');
+      }
+    }
+
+    // Helper highlight generator
+    function highlightText(elementId, originalText, query) {
+      const element = document.getElementById(elementId);
+      if (!query) {
+        element.innerHTML = originalText;
+        return;
+      }
+
+      const regex = new RegExp(`(${escapeRegExp(query)})`, 'gi');
+      element.innerHTML = originalText.replace(regex, `<mark class="bg-yellow-100 dark:bg-amber-950 dark:text-amber-200 text-slate-900 rounded px-0.5">$1</mark>`);
+    }
+
+    function escapeRegExp(string) {
+      return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    // ==========================================
+    // PERSONALIZED CIVIC PASSPORT DASHBOARD (FEATURE 6)
+    // ==========================================
+    
+    function updateDashboardUI() {
+      // 1. Calculate and update Stepper journey ring metrics
+      let completedStepsCount = 0;
+      state.journey.completedSteps.forEach(c => { if(c) completedStepsCount++; });
+
+      const stepperPercent = Math.round((completedStepsCount / 6) * 100);
+      document.getElementById('dashboard-journey-percent').innerText = `${stepperPercent}%`;
+      
+      const circle = document.getElementById('dashboard-ring-fill');
+      // Circumference is 2 * pi * r = 2 * 3.14159 * 26 = 163.36
+      const offset = 163.36 - (stepperPercent / 100) * 163.36;
+      circle.style.strokeDashoffset = offset;
+      
+      document.getElementById('dashboard-journey-status').innerText = `${completedStepsCount} of 6 Steps Done`;
+
+      // 2. Quiz Status Check
+      const quizStatus = document.getElementById('dashboard-quiz-status');
+      const quizTag = document.getElementById('dashboard-quiz-tag');
+      const quizVisual = document.getElementById('dashboard-quiz-visual');
+
+      if (state.quiz.status === 'untested') {
+        quizStatus.innerText = "Quiz Pending";
+        quizTag.innerText = "Take evaluation above";
+        quizVisual.className = "w-16 h-16 rounded-xl bg-indigo-50 dark:bg-indigo-950/20 text-indigo-500 flex items-center justify-center text-3xl flex-shrink-0";
+      } else if (state.quiz.status === 'finished') {
+        let rating = "Developing Voter";
+        if (state.quiz.score >= 9) {
+          rating = "Civic Mastermind";
+          quizVisual.className = "w-16 h-16 rounded-xl bg-emerald-100 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-3xl flex-shrink-0";
+        } else if (state.quiz.score >= 6) {
+          rating = "Engaged Citizen";
+          quizVisual.className = "w-16 h-16 rounded-xl bg-brand-500 dark:bg-brand-900/40 text-white flex items-center justify-center text-3xl flex-shrink-0";
+        } else {
+          quizVisual.className = "w-16 h-16 rounded-xl bg-amber-50 dark:bg-amber-950/20 text-amber-600 dark:text-amber-400 flex items-center justify-center text-3xl flex-shrink-0";
+        }
+        quizStatus.innerText = `Score: ${state.quiz.score}/10`;
+        quizTag.innerText = rating;
+      }
+
+      // 3. Voting simulator cast check
+      const simStatus = document.getElementById('dashboard-sim-status');
+      const simTag = document.getElementById('dashboard-sim-tag');
+      const simVisual = document.getElementById('dashboard-sim-visual');
+
+      const totalSimVotes = state.simulator.votes.jenkins + state.simulator.votes.vance + state.simulator.votes.rostova + state.simulator.votes.writein;
+
+      if (totalSimVotes === 0) {
+        simStatus.innerText = "Ballot Not Cast";
+        simTag.innerText = "Test ballot systems above";
+        simVisual.className = "w-16 h-16 rounded-xl bg-amber-50 dark:bg-amber-950/20 text-amber-500 flex items-center justify-center text-3xl flex-shrink-0";
+      } else {
+        simVisual.className = "w-16 h-16 rounded-xl bg-emerald-100 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-3xl flex-shrink-0";
+        if (state.simulator.hasCastVote && state.simulator.lastVoteSelection) {
+          simStatus.innerText = `Ballot Recorded`;
+          simTag.innerText = `Chose ${getCandidateName(state.simulator.lastVoteSelection)}`;
+        } else {
+          simStatus.innerText = `Simulator Active`;
+          simTag.innerText = `${totalSimVotes} total simulated votes counted`;
+        }
+      }
+
+      // 4. Generate Personalized Directive Action Checklist Recommendations
+      const listContainer = document.getElementById('dashboard-action-items');
+      let itemsHTML = [];
+
+      // Logic check steps:
+      if (!state.journey.completedSteps[0]) {
+        itemsHTML.push(`
+          <div class="flex items-start gap-2.5 p-3 rounded-xl bg-rose-50 border border-rose-100/50 dark:bg-rose-950/10 dark:border-rose-900/30 text-xs">
+            <span class="text-rose-500 mt-0.5"><i class="fa-solid fa-circle-exclamation"></i></span>
+            <div>
+              <strong class="text-rose-800 dark:text-rose-400 block font-bold">Incomplete Registration Step</strong>
+              <span class="text-slate-500">First milestone of democracy is checking eligibility. Review Stepper Step 1.</span>
+            </div>
+          </div>
+        `);
+      }
+
+      if (state.quiz.status === 'untested') {
+        itemsHTML.push(`
+          <div class="flex items-start gap-2.5 p-3 rounded-xl bg-indigo-50 border border-indigo-100/50 dark:bg-indigo-950/10 dark:border-indigo-900/30 text-xs">
+            <span class="text-indigo-500 mt-0.5"><i class="fa-solid fa-circle-info"></i></span>
+            <div>
+              <strong class="text-indigo-800 dark:text-indigo-400 block font-bold">Unexamined Knowledge Credentials</strong>
+              <span class="text-slate-500">Test your command of voting practices and certifications. Try the Civic Trivia Quiz.</span>
+            </div>
+          </div>
+        `);
+      } else if (state.quiz.status === 'finished' && state.quiz.score < 6) {
+        itemsHTML.push(`
+          <div class="flex items-start gap-2.5 p-3 rounded-xl bg-amber-50 border border-amber-100/50 dark:bg-amber-950/10 dark:border-amber-900/30 text-xs">
+            <span class="text-amber-500 mt-0.5"><i class="fa-solid fa-triangle-exclamation"></i></span>
+            <div>
+              <strong class="text-amber-800 dark:text-amber-400 block font-bold">Strengthen Voting Knowledge</strong>
+              <span class="text-slate-500">Trivia score was under 60%. Retake the quiz to sharpen your civic confidence.</span>
+            </div>
+          </div>
+        `);
+      }
+
+      if (totalSimVotes === 0) {
+        itemsHTML.push(`
+          <div class="flex items-start gap-2.5 p-3 rounded-xl bg-indigo-50 border border-indigo-100/50 dark:bg-indigo-950/10 dark:border-indigo-900/30 text-xs">
+            <span class="text-indigo-500 mt-0.5"><i class="fa-solid fa-circle-info"></i></span>
+            <div>
+              <strong class="text-indigo-800 dark:text-indigo-400 block font-bold">Explore Ballot Tallies</strong>
+              <span class="text-slate-500">Understand Plurality versus Majority calculations. Run the simulator today!</span>
+            </div>
+          </div>
+        `);
+      }
+
+      // Add a default positive check if everything is complete
+      if (completedStepsCount === 6 && state.quiz.status === 'finished' && state.quiz.score >= 6 && totalSimVotes > 0) {
+        itemsHTML.push(`
+          <div class="col-span-2 flex items-start gap-2.5 p-4 rounded-xl bg-emerald-50 border border-emerald-100/50 dark:bg-emerald-950/15 dark:border-emerald-900/30 text-xs">
+            <span class="text-emerald-500 mt-0.5"><i class="fa-solid fa-circle-check text-base"></i></span>
+            <div>
+              <strong class="text-emerald-800 dark:text-emerald-400 block font-bold">Exemplary Civic Credentials Achieved!</strong>
+              <span class="text-slate-600 dark:text-slate-400">You have completed all educational programs, validated your knowledge credentials, and explored tally simulations. Print your credential certificate above.</span>
+            </div>
+          </div>
+        `);
+      }
+
+      // Fallback filler items to make a clean double-column list
+      if (itemsHTML.length === 0) {
+        itemsHTML.push(`
+          <div class="flex items-start gap-2.5 p-3 rounded-xl bg-emerald-50/50 border border-emerald-100/30 dark:bg-emerald-950/10 dark:border-emerald-900/20 text-xs">
+            <span class="text-emerald-500 mt-0.5"><i class="fa-solid fa-check"></i></span>
+            <div>
+              <strong class="text-emerald-800 dark:text-emerald-400 block font-bold">Secure voter registries reviewed.</strong>
+              <span class="text-slate-500">Ensure signatures match state drivers files clean of mismatches.</span>
+            </div>
+          </div>
+        `);
+        itemsHTML.push(`
+          <div class="flex items-start gap-2.5 p-3 rounded-xl bg-emerald-50/50 border border-emerald-100/30 dark:bg-emerald-950/10 dark:border-emerald-900/20 text-xs">
+            <span class="text-emerald-500 mt-0.5"><i class="fa-solid fa-check"></i></span>
+            <div>
+              <strong class="text-emerald-800 dark:text-emerald-400 block font-bold">Ballot delivery systems evaluated.</strong>
+              <span class="text-slate-500">Maintain ballot envelopes secure inside county verified dropboxes.</span>
+            </div>
+          </div>
+        `);
+      }
+
+      listContainer.innerHTML = itemsHTML.join('');
+    }
+
+    // Bind printable action
+    document.getElementById('print-passport-btn').addEventListener('click', () => {
+      // 1. Sync certificate variables before print
+      let completedStepsCount = 0;
+      state.journey.completedSteps.forEach(c => { if(c) completedStepsCount++; });
+      document.getElementById('print-journey-val').innerText = `${completedStepsCount} of 6 Stages Checked`;
+
+      const quizValText = state.quiz.status === 'finished' ? `Score: ${state.quiz.score}/10` : "Unfinished Evaluation";
+      document.getElementById('print-quiz-val').innerText = quizValText;
+
+      const simValText = state.simulator.hasCastVote && state.simulator.lastVoteSelection 
+        ? `Demo Ballot for ${getCandidateName(state.simulator.lastVoteSelection)}`
+        : "Simulation Explorer Active";
+      document.getElementById('print-vote-val').innerText = simValText;
+
+      // Local Date formatted
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('print-date-val').innerText = new Date().toLocaleDateString(undefined, options);
+
+      // 2. Fire native printable trigger
+      window.print();
+    });
+
+    // ==========================================
+    // INITIALIZATION & QA WIRE (AGENT 4)
+    // ==========================================
+    
+    window.addEventListener('DOMContentLoaded', () => {
+      // Set footer year
+      document.getElementById('footer-year').innerText = new Date().getFullYear();
+
+      // Retrieve state cache
+      loadFromLocalStorage();
+      
+      // Load Feature modules
+      startCountdown();
+      initJourneyStepper();
+      initFAQAccordion();
+      initCivicQuiz();
+
+      // Synchronize initial dashboard view
+      onStateChange();
+    });
+  </script>
+</body>
+</html>
